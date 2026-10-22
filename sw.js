@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v99.05';
+const CACHE_NAME = 'kasir-pos-v99.06';
 const urlsToCache = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(response => {
       if (response) return response;
       return fetch(event.request).then(fetchRes => {
+        // Jangan cache koneksi API / Database
         if(event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
             return fetchRes;
         }
