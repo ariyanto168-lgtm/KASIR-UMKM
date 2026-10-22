@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.05</title>
+    <title>Kasir UMKM - v99.06</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kasir UMKM">
-    <!-- Wajib menggunakan logo .png yang baru untuk iOS -->
     <link rel="apple-touch-icon" href="logo-kasir.png">
     <link rel="manifest" href="manifest.json">
 
@@ -34,7 +33,13 @@
         .item-row { position: relative; }
         .btn-delete-row { position: absolute; top: -10px; right: -10px; z-index: 10; border-radius: 50%; padding: 2px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* STRUK CETAK TERMAL 58mm (Persis file asli) */
+        /* Banner Instal Mengambang di Bawah (Fixed Bottom) */
+        .banner-float {
+            display: none; position: fixed; bottom: 75px; left: 15px; right: 15px; z-index: 1040;
+            animation: slideUp 0.4s ease-out; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; display: block !important; }
@@ -61,27 +66,30 @@
         </div>
         
         <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-            <span class="text-muted fw-bold">Versi 99.05</span>
+            <span class="text-muted fw-bold">Versi 99.06</span>
             <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
         </div>
     </nav>
 
     <!-- PWA INSTALL BANNER -->
-    <div id="installBanner" class="alert alert-primary alert-dismissible fade show m-3 shadow-sm border-primary" role="alert" style="display: none; position: sticky; top: 85px; z-index: 1020;">
+    <div id="installBanner" class="alert alert-primary alert-dismissible banner-float border-primary rounded-3 bg-white" role="alert">
         <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <strong><i class="bi bi-phone"></i> Pasang Aplikasi!</strong><br>
-                <small>Instal ke Layar Utama HP Anda untuk akses offline.</small>
+            <div class="d-flex align-items-center gap-2">
+                <img src="logo-kasir.png" style="width: 35px; height: 35px; border-radius: 8px;">
+                <div style="line-height: 1.2;">
+                    <strong class="text-dark" style="font-size: 13px;">Pasang Aplikasi</strong><br>
+                    <small class="text-muted" style="font-size: 11px;">Akses cepat & Offline</small>
+                </div>
             </div>
-            <button type="button" class="btn btn-sm btn-primary ms-2 fw-bold px-3 shadow-sm" id="btnInstallPwa">Instal</button>
+            <button type="button" class="btn btn-primary btn-sm fw-bold rounded-pill px-3 shadow-sm" id="btnInstallPwa">Instal</button>
         </div>
-        <button type="button" class="btn-close" style="padding: 0.5rem; top: 0;" aria-label="Close" onclick="tutupBannerInstal()"></button>
+        <button type="button" class="btn-close" style="padding: 0.8rem; top: 0;" aria-label="Close" onclick="tutupBannerInstal()"></button>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="container-fluid mt-3 mb-2">
         
-        <!-- ================= 1. VIEW KASIR ================= -->
+        <!-- 1. VIEW KASIR -->
         <div id="viewKasir" class="view-section active">
             <div class="card mb-3 shadow-sm border-0">
                 <div class="card-body p-2 d-flex justify-content-between align-items-center bg-light rounded">
@@ -125,11 +133,9 @@
                         <p class="small fw-bold text-primary mb-1">Scan QRIS untuk Pembayaran</p>
                         <div class="small fw-bold mb-2">Jumlah: <span id="qrisTotalAmount" class="text-primary fs-5">Rp 0</span></div>
                         <img id="qrisImg" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Dummy-QRIS" class="img-fluid border bg-white p-1 rounded shadow-sm" style="width: 200px; height: 200px; object-fit: contain;">
-                        <p class="small text-muted mt-2 mb-0">Silakan arahkan kamera M-Banking / E-Wallet Anda ke QR code di atas.</p>
                     </div>
                     
                     <div id="transferBox" class="bg-light p-3 rounded" style="display:none; border: 1px dashed #6c757d;">
-                        <p class="small fw-bold text-secondary mb-2 border-bottom pb-1">Pengaturan Rekening Transfer:</p>
                         <label class="form-label small fw-bold mb-1">Nama Bank / E-Wallet</label>
                         <input type="text" id="bankName" class="form-control form-control-sm mb-2" placeholder="Cth: BCA / DANA" oninput="simpanRekeningAuto()">
                         <label class="form-label small fw-bold mb-1">Nomor Rekening & Atas Nama</label>
@@ -147,21 +153,21 @@
             </div>
         </div>
 
-        <!-- ================= 2. VIEW LAPORAN ================= -->
+        <!-- 2. VIEW LAPORAN -->
         <div id="viewLaporan" class="view-section">
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center bg-light rounded">
                     <h6 class="fw-bold mb-0 text-dark">Riwayat Transaksi</h6>
                     <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-outline-primary fw-bold" onclick="bukaRekap()"><i class="bi bi-pie-chart-fill"></i> Rekap</button>
-                        <button class="btn btn-sm btn-outline-danger fw-bold" onclick="konfirmasiResetLaporan()"><i class="bi bi-trash-fill"></i> Reset</button>
+                        <button class="btn btn-sm btn-outline-danger fw-bold" onclick="konfirmasiResetLaporan()"><i class="bi bi-trash-fill"></i></button>
                     </div>
                 </div>
             </div>
             <div id="laporanContainer" class="d-flex flex-column gap-3"></div>
         </div>
 
-        <!-- ================= 3. VIEW PENGATURAN ================= -->
+        <!-- 3. VIEW PENGATURAN -->
         <div id="viewPengaturan" class="view-section">
             <div class="d-flex justify-content-between align-items-center mb-3 px-1">
                 <h6 class="fw-bold mb-0 text-secondary">Pengaturan Sistem</h6>
@@ -171,24 +177,21 @@
             <div class="card mb-3 shadow-sm border-0">
                 <div class="card-header bg-white fw-bold border-bottom-0"><i class="bi bi-shop text-primary"></i> Identitas Toko & Header</div>
                 <div class="card-body p-3 bg-light rounded-bottom">
-                    <label class="form-label small fw-bold mb-1">Nama Toko (Untuk Struk & Laporan)</label>
+                    <label class="form-label small fw-bold mb-1">Nama Toko (Untuk Struk)</label>
                     <input type="text" id="settingStoreName" class="form-control form-control-sm mb-2" placeholder="Cth: Konter Pulsa Jaya">
-                    
-                    <label class="form-label small fw-bold mb-1">Judul Header Aplikasi (Bilah Atas)</label>
+                    <label class="form-label small fw-bold mb-1">Judul Header Aplikasi</label>
                     <input type="text" id="settingHeaderTitle" class="form-control form-control-sm mb-2" placeholder="Cth: Kasir UMKM">
-
                     <label class="form-label small fw-bold mb-1">Alamat Toko</label>
                     <input type="text" id="settingAddress" class="form-control form-control-sm mb-2" placeholder="Cth: Semarang">
-                    
-                    <label class="form-label small fw-bold mb-1">Pesan Bawah Nota / Struk</label>
-                    <input type="text" id="settingFooterMsg" class="form-control form-control-sm" placeholder="Cth: Terima Kasih Telah Berbelanja!">
+                    <label class="form-label small fw-bold mb-1">Pesan Bawah Nota</label>
+                    <input type="text" id="settingFooterMsg" class="form-control form-control-sm">
                 </div>
             </div>
             
             <div class="card mb-3 shadow-sm border-0">
-                <div class="card-header bg-white fw-bold border-bottom-0"><i class="bi bi-cloud-link text-primary"></i> Koneksi Spreadsheet</div>
+                <div class="card-header bg-white fw-bold border-bottom-0"><i class="bi bi-cloud-link text-primary"></i> Koneksi Google Sheets</div>
                 <div class="card-body p-3 bg-light rounded-bottom">
-                    <label class="form-label small fw-bold mb-1">URL Web App Google Apps Script</label>
+                    <label class="form-label small fw-bold mb-1">URL Web App (Apps Script)</label>
                     <div class="input-group input-group-sm mb-2 shadow-sm">
                         <input type="url" id="settingGasUrl" class="form-control" placeholder="https://script.google.com/macros/s/..." readonly>
                         <button class="btn btn-secondary" type="button" id="btnLockGas" onclick="toggleLockGas()"><i class="bi bi-lock-fill"></i></button>
@@ -199,7 +202,6 @@
             <div class="card mb-3 shadow-sm border-0">
                 <div class="card-header bg-white fw-bold border-bottom-0"><i class="bi bi-palette text-primary"></i> Tampilan & QRIS</div>
                 <div class="card-body p-3 bg-light rounded-bottom">
-                    <label class="form-label small fw-bold mb-1">Pilih Tema Warna Tampilan</label>
                     <select id="settingTheme" class="form-select form-select-sm mb-3 shadow-sm">
                         <option value="ocean">Ocean (Biru Default)</option>
                         <option value="emerald">Emerald (Hijau)</option>
@@ -207,28 +209,19 @@
                         <option value="sunset">Sunset (Oranye Gelap)</option>
                         <option value="dark">Dark Mode (Mode Gelap)</option>
                     </select>
-                    
-                    <label class="form-label small fw-bold mb-1">Unggah / Ganti Foto QRIS</label>
+                    <label class="form-label small fw-bold mb-1">Unggah Foto QRIS</label>
                     <input type="file" id="settingQrisFile" class="form-control form-control-sm mb-2 shadow-sm" accept="image/*" onchange="simpanQRIS(event)">
-                    <div class="text-center mt-2">
-                        <img id="qrisPreviewSet" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=Dummy-QRIS" class="img-thumbnail rounded" style="max-height: 120px; object-fit: contain;">
-                    </div>
+                    <div class="text-center mt-2"><img id="qrisPreviewSet" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=Dummy-QRIS" class="img-thumbnail rounded" style="max-height: 120px; object-fit: contain;"></div>
                 </div>
             </div>
 
             <div class="card mb-4 shadow-sm border-0 border-danger border-top border-3">
-                <div class="card-header bg-white fw-bold border-bottom-0"><i class="bi bi-hdd-network text-danger"></i> Backup & Restore Data</div>
                 <div class="card-body p-3 bg-light rounded-bottom text-center">
                     <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary w-100 btn-sm bg-white shadow-sm fw-bold" onclick="backupData()"><i class="bi bi-download"></i> Backup .json</button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-success w-100 btn-sm bg-white shadow-sm fw-bold" onclick="document.getElementById('importFile').click()"><i class="bi bi-upload"></i> Restore</button>
-                            <input type="file" id="importFile" class="d-none" accept=".json" onchange="restoreData(event)">
-                        </div>
+                        <div class="col-6"><button class="btn btn-outline-primary w-100 btn-sm fw-bold" onclick="backupData()"><i class="bi bi-download"></i> Backup .json</button></div>
+                        <div class="col-6"><button class="btn btn-outline-success w-100 btn-sm fw-bold" onclick="document.getElementById('importFile').click()"><i class="bi bi-upload"></i> Restore</button><input type="file" id="importFile" class="d-none" accept=".json" onchange="restoreData(event)"></div>
                     </div>
-                    <button class="btn btn-danger w-100 fw-bold shadow-sm" onclick="konfirmasiLogout()"><i class="bi bi-power"></i> Log Out / Hapus Sesi</button>
+                    <button class="btn btn-danger w-100 fw-bold shadow-sm" onclick="konfirmasiLogout()"><i class="bi bi-power"></i> Hapus Seluruh Data</button>
                 </div>
             </div>
             
@@ -236,32 +229,27 @@
         </div>
     </div>
 
-    <!-- ================= BOTTOM NAVIGATION ================= -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="navbar fixed-bottom bg-white bottom-nav">
         <div class="container-fluid d-flex justify-content-around align-items-center h-100 pb-2">
-            <a href="#" class="nav-link text-center active d-flex flex-column align-items-center w-100" id="navKasir" onclick="switchTab('kasir')">
-                <i class="bi bi-house-door-fill fs-4 lh-1 mb-1"></i><span style="font-size: 11px;">Kasir</span>
+            <a href="#" class="nav-link text-center active w-100" id="navKasir" onclick="switchTab('kasir')">
+                <i class="bi bi-house-door-fill fs-4 lh-1 d-block mb-1"></i><span style="font-size: 11px;">Kasir</span>
             </a>
-            <a href="#" class="nav-link text-center d-flex flex-column align-items-center w-100" id="navLaporan" onclick="switchTab('laporan')">
-                <i class="bi bi-clock-history fs-4 lh-1 mb-1"></i>
+            <a href="#" class="nav-link text-center w-100" id="navLaporan" onclick="switchTab('laporan')">
+                <i class="bi bi-clock-history fs-4 lh-1 d-block mb-1"></i>
                 <span style="font-size: 11px;">Laporan <span id="countReportBtn" class="badge bg-danger rounded-pill" style="font-size: 8px; position: absolute; top: 0; right: 25px;">0</span></span>
             </a>
-            <a href="#" class="nav-link text-center d-flex flex-column align-items-center w-100" id="navPengaturan" onclick="switchTab('pengaturan')">
-                <i class="bi bi-gear-fill fs-4 lh-1 mb-1"></i><span style="font-size: 11px;">Pengaturan</span>
+            <a href="#" class="nav-link text-center w-100" id="navPengaturan" onclick="switchTab('pengaturan')">
+                <i class="bi bi-gear-fill fs-4 lh-1 d-block mb-1"></i><span style="font-size: 11px;">Pengaturan</span>
             </a>
         </div>
     </nav>
 
-    <!-- ================= CUSTOM MODALS (NO BROWSER POPUPS) ================= -->
+    <!-- CUSTOM MODALS -->
     <div class="modal fade" id="modalAlert" tabindex="-1" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow text-center">
-                <div class="modal-body p-4">
-                    <i class="bi bi-exclamation-triangle-fill text-warning mb-2" style="font-size: 3.5rem;"></i>
-                    <h5 class="fw-bold text-dark" id="alertTitle">Perhatian</h5>
-                    <p class="text-muted mb-4 small" id="alertMessage"></p>
-                    <button type="button" class="btn btn-primary w-100 fw-bold rounded-pill" data-bs-dismiss="modal">OK</button>
-                </div>
+                <div class="modal-body p-4"><i class="bi bi-info-circle-fill text-primary mb-2" style="font-size: 3.5rem;"></i><h5 class="fw-bold text-dark" id="alertTitle">Info</h5><p class="text-muted mb-4 small" id="alertMessage"></p><button type="button" class="btn btn-primary w-100 fw-bold rounded-pill" data-bs-dismiss="modal">OK</button></div>
             </div>
         </div>
     </div>
@@ -269,15 +257,7 @@
     <div class="modal fade" id="modalConfirm" tabindex="-1" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow text-center">
-                <div class="modal-body p-4">
-                    <i class="bi bi-question-circle-fill text-primary mb-2" style="font-size: 3.5rem;"></i>
-                    <h5 class="fw-bold text-dark" id="confirmTitle">Konfirmasi</h5>
-                    <p class="text-muted mb-4 small" id="confirmMessage"></p>
-                    <div class="row g-2">
-                        <div class="col-6"><button type="button" class="btn btn-secondary w-100 fw-bold rounded-pill" data-bs-dismiss="modal">Batal</button></div>
-                        <div class="col-6"><button type="button" class="btn btn-danger w-100 fw-bold rounded-pill" id="btnConfirmYes">Ya, Lanjutkan</button></div>
-                    </div>
-                </div>
+                <div class="modal-body p-4"><i class="bi bi-question-circle-fill text-primary mb-2" style="font-size: 3.5rem;"></i><h5 class="fw-bold text-dark" id="confirmTitle">Konfirmasi</h5><p class="text-muted mb-4 small" id="confirmMessage"></p><div class="row g-2"><div class="col-6"><button type="button" class="btn btn-secondary w-100 fw-bold rounded-pill" data-bs-dismiss="modal">Batal</button></div><div class="col-6"><button type="button" class="btn btn-danger w-100 fw-bold rounded-pill" id="btnConfirmYes">Lanjutkan</button></div></div></div>
             </div>
         </div>
     </div>
@@ -285,23 +265,11 @@
     <div class="modal fade" id="modalNota" tabindex="-1" data-bs-backdrop="static" style="z-index: 1050;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow">
-                <div class="modal-body p-3 pb-3 text-center">
-                    <i class="bi bi-check-circle-fill text-success mb-0" style="font-size: 3.5rem;"></i>
-                    <h5 class="fw-bold mt-1 text-dark">Transaksi Berhasil!</h5>
-                    
-                    <div id="receiptPreview" class="text-start bg-light p-2 border rounded shadow-inner mt-2 mb-3 text-dark" style="font-family: monospace; font-size: 11px; line-height: 1.4;"></div>
-                    
-                    <!-- Tombol Aksi Persis Fitur Asli -->
-                    <div class="row g-2 mb-2">
-                        <div class="col-6"><button class="btn btn-outline-primary w-100 fw-bold shadow-sm py-2" id="btnCetakNota"><i class="bi bi-printer"></i> Cetak Nota</button></div>
-                        <div class="col-6"><button class="btn btn-success w-100 fw-bold shadow-sm py-2" id="btnKirimWA"><i class="bi bi-whatsapp"></i> Kirim WA</button></div>
-                    </div>
-                    
-                    <div class="row g-2">
-                        <div class="col-4"><button class="btn btn-secondary w-100 fw-bold p-2" style="font-size: 11px;" onclick="aksiLaporan()">laporan</button></div>
-                        <div class="col-4"><button class="btn btn-secondary w-100 fw-bold p-2" style="font-size: 11px; background-color: #6c757d;" data-bs-dismiss="modal">tutup</button></div>
-                        <div class="col-4"><button class="btn btn-primary w-100 fw-bold p-2" style="font-size: 11px;" onclick="aksiOrderBaru()">order baru</button></div>
-                    </div>
+                <div class="modal-body p-3 text-center">
+                    <i class="bi bi-check-circle-fill text-success mb-0" style="font-size: 3.5rem;"></i><h5 class="fw-bold mt-1 text-dark">Sukses!</h5>
+                    <div id="receiptPreview" class="text-start bg-light p-2 border rounded mt-2 mb-3 text-dark" style="font-family: monospace; font-size: 11px; line-height: 1.4;"></div>
+                    <div class="row g-2 mb-2"><div class="col-6"><button class="btn btn-outline-primary w-100 fw-bold shadow-sm" id="btnCetakNota"><i class="bi bi-printer"></i> Cetak</button></div><div class="col-6"><button class="btn btn-success w-100 fw-bold shadow-sm" id="btnKirimWA"><i class="bi bi-whatsapp"></i> WhatsApp</button></div></div>
+                    <div class="row g-2"><div class="col-6"><button class="btn btn-secondary w-100 fw-bold p-2" style="font-size: 11px;" onclick="aksiLaporan()">Laporan</button></div><div class="col-6"><button class="btn btn-primary w-100 fw-bold p-2" style="font-size: 11px;" onclick="aksiOrderBaru()">Order Baru</button></div></div>
                 </div>
             </div>
         </div>
@@ -310,29 +278,12 @@
     <div class="modal fade" id="modalRekap" tabindex="-1" style="z-index: 1050;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-light border-bottom-0 pb-2">
-                    <h5 class="modal-title fw-bold text-primary"><i class="bi bi-pie-chart-fill me-1"></i> Rekap Penjualan & Laba</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header bg-light border-bottom-0 pb-2"><h5 class="modal-title fw-bold text-primary"><i class="bi bi-pie-chart-fill me-1"></i> Rekap Penjualan</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body pt-0">
-                    <div class="mb-2 small"><b>Jumlah Struk / Transaksi:</b> <span id="recapTx">0</span> transaksi</div>
-                    <div class="mb-2 small"><b>Total Pendapatan:</b> <span id="recapPendapatan" class="text-primary fw-bold">Rp 0</span></div>
+                    <div class="mb-2 small"><b>Jumlah Struk:</b> <span id="recapTx">0</span></div>
+                    <div class="mb-2 small"><b>Total Omzet:</b> <span id="recapPendapatan" class="text-primary fw-bold">Rp 0</span></div>
                     <div class="mb-2 small"><b>Total Modal:</b> <span id="recapModalTxt">Rp 0</span></div>
-                    
-                    <div class="bg-success bg-opacity-10 p-2 rounded border border-success mb-3">
-                        <span class="fw-bold text-success" style="font-size:11px;">TOTAL LABA BERSIH:</span><br>
-                        <span id="recapLaba" class="text-success fw-bold fs-5">Rp 0</span>
-                    </div>
-
-                    <div class="border-top pt-2 border-dashed small">
-                        <div class="fw-bold text-muted mb-1">Rincian Metode Pembayaran:</div>
-                        <div>&bull; Tunai: <b id="recapTunai">Rp 0</b></div>
-                        <div>&bull; QRIS: <b id="recapQris">Rp 0</b></div>
-                        <div>&bull; Transfer: <b id="recapTransfer">Rp 0</b></div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button class="btn btn-primary w-100 fw-bold" data-bs-dismiss="modal">Tutup</button>
+                    <div class="bg-success bg-opacity-10 p-2 rounded border border-success mb-3"><span class="fw-bold text-success" style="font-size:11px;">LABA BERSIH:</span><br><span id="recapLaba" class="text-success fw-bold fs-5">Rp 0</span></div>
                 </div>
             </div>
         </div>
@@ -342,55 +293,22 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ----------------------------------------------------
-        // 1. STRUKTUR DATA OFFLINE (LOCAL STORAGE)
-        // ----------------------------------------------------
-        let APP_DATA = JSON.parse(localStorage.getItem('APP_DATA_POS')) || {
-            settings: { 
-                storeName: 'Konter Pulsa Jaya', // Untuk cetak struk
-                headerTitle: 'Kasir UMKM', // Untuk Navbar Atas
-                address: 'Kota Anda', 
-                footerMsg: 'Terima Kasih Telah Berbelanja!', 
-                theme: 'ocean', 
-                gasUrl: '', 
-                qrisImage: '',
-                bankName: '', // Auto-save rekening
-                noRek: ''
-            },
-            transactions: [], 
-            unsyncedIds: []
-        };
-        
-        let gasLocked = true;
-        let bsModalAlert, bsModalConfirm, bsModalNota, bsModalRekap;
-        let deferredPrompt; 
+        let APP_DATA = JSON.parse(localStorage.getItem('APP_DATA_POS')) || { settings: { storeName: 'Kasir UMKM', headerTitle: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih Telah Berbelanja!', theme: 'ocean', gasUrl: '', qrisImage: '', bankName: '', noRek: '' }, transactions: [], unsyncedIds: [] };
+        let gasLocked = true; let bsModalAlert, bsModalConfirm, bsModalNota, bsModalRekap; let deferredPrompt; 
 
         document.addEventListener("DOMContentLoaded", () => {
-            bsModalAlert = new bootstrap.Modal(document.getElementById('modalAlert'));
-            bsModalConfirm = new bootstrap.Modal(document.getElementById('modalConfirm'));
-            bsModalNota = new bootstrap.Modal(document.getElementById('modalNota'));
-            bsModalRekap = new bootstrap.Modal(document.getElementById('modalRekap'));
-
-            updateUIFromSettings();
-            generateNoNota();
-            if(document.getElementById('itemsContainer').children.length === 0) tambahBaris();
-            updateCountReport(); // Update badge laporan
+            bsModalAlert = new bootstrap.Modal(document.getElementById('modalAlert')); bsModalConfirm = new bootstrap.Modal(document.getElementById('modalConfirm')); bsModalNota = new bootstrap.Modal(document.getElementById('modalNota')); bsModalRekap = new bootstrap.Modal(document.getElementById('modalRekap'));
+            updateUIFromSettings(); generateNoNota(); if(document.getElementById('itemsContainer').children.length === 0) tambahBaris(); updateCountReport();
             
-            if (localStorage.getItem('hideInstallBanner') === 'true') {
-                document.getElementById('installBanner').style.display = 'none';
-            }
-            
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
-            }
+            // Pengecekan banner - Tampil jika belum pernah ditutup
+            if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'flex'; }
+            if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
         });
 
-        // ----------------------------------------------------
-        // LOGIKA PWA INSTALL
-        // ----------------------------------------------------
+        // ------------------ PWA BANNER LOGIC ------------------
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
-            if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'block'; }
+            if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'flex'; }
         });
 
         document.getElementById('btnInstallPwa').addEventListener('click', async () => {
@@ -398,280 +316,138 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') banner.style.display = 'none';
+                if (outcome === 'accepted') { banner.style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); }
                 deferredPrompt = null;
-            } else {
-                banner.style.display = 'none';
-                showAlert('Informasi', 'Aplikasi ini kemungkinan sudah terinstal, cek Layar Utama HP Anda.');
-            }
+            } else { showAlert('Informasi', 'Aplikasi kemungkinan sudah terinstal di HP Anda, atau browser tidak mendukung fitur ini.'); }
         });
 
-        function tutupBannerInstal() {
-            document.getElementById('installBanner').style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true');
-        }
-        window.addEventListener('appinstalled', () => { document.getElementById('installBanner').style.display = 'none'; deferredPrompt = null; });
+        function tutupBannerInstal() { document.getElementById('installBanner').style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); }
+        window.addEventListener('appinstalled', () => { document.getElementById('installBanner').style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); deferredPrompt = null; });
 
-        // ----------------------------------------------------
-        // HELPER & NAVIGATION
-        // ----------------------------------------------------
+        // ------------------ HELPER ------------------
         function saveData() { localStorage.setItem('APP_DATA_POS', JSON.stringify(APP_DATA)); updateCountReport(); }
         function showAlert(title, msg) { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerHTML = msg; bsModalAlert.show(); }
         function showConfirm(title, msg, onYesCallback) { document.getElementById('confirmTitle').innerText = title; document.getElementById('confirmMessage').innerHTML = msg; document.getElementById('btnConfirmYes').onclick = () => { bsModalConfirm.hide(); onYesCallback(); }; bsModalConfirm.show(); }
 
         function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.bottom-nav .nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.bottom-nav .nav-link').forEach(el => el.classList.remove('active'));
             if(tabId === 'kasir') { document.getElementById('viewKasir').classList.add('active'); document.getElementById('navKasir').classList.add('active'); } 
             else if(tabId === 'laporan') { renderLaporan(); document.getElementById('viewLaporan').classList.add('active'); document.getElementById('navLaporan').classList.add('active'); } 
             else if(tabId === 'pengaturan') { document.getElementById('viewPengaturan').classList.add('active'); document.getElementById('navPengaturan').classList.add('active'); }
         }
 
-        // ----------------------------------------------------
-        // KASIR & TRANSAKSI
-        // ----------------------------------------------------
         function updateCountReport() { document.getElementById('countReportBtn').innerText = APP_DATA.transactions.length; }
         function generateNoNota() { document.getElementById('noNota').value = 'INV-' + (Math.floor(Math.random() * 900000) + 100000); }
 
         function tambahBaris() {
             let container = document.getElementById('itemsContainer'); let id = Date.now().toString() + Math.floor(Math.random()*100);
-            let rowHTML = `
-            <div class="item-row bg-white border rounded p-3 mb-3 shadow-sm" id="row-${id}">
-                <div class="d-flex justify-content-between align-items-center mb-2"><span class="small fw-bold text-primary">Produk / Layanan</span><button class="btn-delete-row text-danger bg-danger bg-opacity-10 border-0" onclick="hapusBaris('${id}')"><i class="bi bi-trash"></i></button></div>
-                <div class="mb-2"><input type="text" class="form-control form-control-sm item-nama fw-bold" placeholder="Cth: Pulsa Telkomsel 50rb" required></div>
-                <div class="row g-2">
-                    <div class="col-4"><label class="form-label small fw-bold mb-1 text-muted">Qty</label><div class="input-group input-group-sm"><button class="btn btn-outline-secondary fw-bold px-2" type="button" onclick="ubahQty('${id}', -1)">-</button><input type="number" class="form-control text-center fw-bold item-qty px-1" value="1" min="1" oninput="hitungTotal()"><button class="btn btn-outline-secondary fw-bold px-2" type="button" onclick="ubahQty('${id}', 1)">+</button></div></div>
-                    <div class="col-8"><label class="form-label small fw-bold mb-1 text-muted">Harga Jual (Rp)</label><input type="number" class="form-control form-control-sm item-harga text-end fw-bold text-primary" placeholder="0" oninput="hitungTotal()" required></div>
-                </div>
-                <div class="mt-2 pt-2 border-top border-dashed"><label class="form-label small fw-bold mb-1 text-muted" style="font-size:10px;">Harga Modal Satuan (Opsi Untuk Laba)</label><input type="number" class="form-control form-control-sm item-modal text-end text-muted bg-light" placeholder="0" oninput="hitungTotal()"></div>
-            </div>`;
+            let rowHTML = `<div class="item-row bg-white border rounded p-3 mb-3 shadow-sm" id="row-${id}"><div class="d-flex justify-content-between align-items-center mb-2"><span class="small fw-bold text-primary">Produk</span><button class="btn-delete-row text-danger bg-danger bg-opacity-10 border-0" onclick="hapusBaris('${id}')"><i class="bi bi-trash"></i></button></div><div class="mb-2"><input type="text" class="form-control form-control-sm item-nama fw-bold" placeholder="Nama Barang"></div><div class="row g-2"><div class="col-4"><label class="form-label small fw-bold mb-1">Qty</label><div class="input-group input-group-sm"><button class="btn btn-outline-secondary fw-bold px-2" type="button" onclick="ubahQty('${id}', -1)">-</button><input type="number" class="form-control text-center fw-bold item-qty px-1" value="1" min="1" oninput="hitungTotal()"><button class="btn btn-outline-secondary fw-bold px-2" type="button" onclick="ubahQty('${id}', 1)">+</button></div></div><div class="col-8"><label class="form-label small fw-bold mb-1">Harga (Rp)</label><input type="number" class="form-control form-control-sm item-harga text-end fw-bold text-primary" placeholder="0" oninput="hitungTotal()"></div></div><div class="mt-2 pt-2 border-top border-dashed"><label class="form-label small fw-bold mb-1 text-muted" style="font-size:10px;">Harga Modal Satuan (Opsi)</label><input type="number" class="form-control form-control-sm item-modal text-end text-muted bg-light" placeholder="0" oninput="hitungTotal()"></div></div>`;
             container.insertAdjacentHTML('beforeend', rowHTML); hitungTotal();
         }
 
-        function hapusBaris(id) {
-            if(document.getElementById('itemsContainer').children.length > 1) { document.getElementById('row-' + id).remove(); hitungTotal(); } 
-            else { showAlert("Perhatian", "Minimal harus ada 1 baris produk!"); }
-        }
-
-        function ubahQty(id, delta) {
-            let input = document.querySelector(`#row-${id} .item-qty`); let val = parseInt(input.value) || 1;
-            input.value = (val + delta) < 1 ? 1 : (val + delta); hitungTotal();
-        }
-
-        function hitungTotal() {
-            let grandTotal = 0;
-            document.querySelectorAll('.item-row').forEach(row => { grandTotal += (Number(row.querySelector('.item-qty').value) || 0) * (Number(row.querySelector('.item-harga').value) || 0); });
-            document.getElementById('grandTotal').innerText = "Rp " + grandTotal.toLocaleString('id-ID');
-            document.getElementById('qrisTotalAmount').innerText = "Rp " + grandTotal.toLocaleString('id-ID'); hitungKembalian();
-        }
-
-        function hitungKembalian() {
-            let grandTotal = parseInt(document.getElementById('grandTotal').innerText.replace(/\D/g,'')) || 0;
-            let uangBayar = Number(document.getElementById('uangBayar').value) || 0;
-            let kembali = uangBayar - grandTotal; let elm = document.getElementById('kembalian');
-            if(kembali >= 0) { elm.innerText = "Rp " + kembali.toLocaleString('id-ID'); elm.className = "fs-4 fw-bold text-success"; }
-            else { elm.innerText = "Uang Kurang (Rp " + Math.abs(kembali).toLocaleString('id-ID') + ")"; elm.className = "fs-5 fw-bold text-danger"; }
-        }
-
-        function togglePayment() {
-            let method = document.querySelector('input[name="paymentMethod"]:checked')?.value;
-            document.getElementById('tunaiBox').style.display = method === 'Tunai' ? 'block' : 'none';
-            document.getElementById('qrisBox').style.display = method === 'QRIS' ? 'block' : 'none';
-            document.getElementById('transferBox').style.display = method === 'Transfer' ? 'block' : 'none';
-        }
-
-        function simpanRekeningAuto() {
-            APP_DATA.settings.bankName = document.getElementById('bankName').value;
-            APP_DATA.settings.noRek = document.getElementById('noRek').value;
-            saveData();
-        }
+        function hapusBaris(id) { if(document.getElementById('itemsContainer').children.length > 1) { document.getElementById('row-' + id).remove(); hitungTotal(); } else { showAlert("Info", "Minimal 1 barang!"); } }
+        function ubahQty(id, delta) { let input = document.querySelector(`#row-${id} .item-qty`); let val = parseInt(input.value) || 1; input.value = (val + delta) < 1 ? 1 : (val + delta); hitungTotal(); }
+        function hitungTotal() { let grandTotal = 0; document.querySelectorAll('.item-row').forEach(row => { grandTotal += (Number(row.querySelector('.item-qty').value) || 0) * (Number(row.querySelector('.item-harga').value) || 0); }); document.getElementById('grandTotal').innerText = "Rp " + grandTotal.toLocaleString('id-ID'); document.getElementById('qrisTotalAmount').innerText = "Rp " + grandTotal.toLocaleString('id-ID'); hitungKembalian(); }
+        function hitungKembalian() { let grandTotal = parseInt(document.getElementById('grandTotal').innerText.replace(/\D/g,'')) || 0; let uangBayar = Number(document.getElementById('uangBayar').value) || 0; let kembali = uangBayar - grandTotal; let elm = document.getElementById('kembalian'); if(kembali >= 0) { elm.innerText = "Rp " + kembali.toLocaleString('id-ID'); elm.className = "fs-4 fw-bold text-success"; } else { elm.innerText = "Kurang Rp " + Math.abs(kembali).toLocaleString('id-ID'); elm.className = "fs-5 fw-bold text-danger"; } }
+        function togglePayment() { let method = document.querySelector('input[name="paymentMethod"]:checked')?.value; document.getElementById('tunaiBox').style.display = method === 'Tunai' ? 'block' : 'none'; document.getElementById('qrisBox').style.display = method === 'QRIS' ? 'block' : 'none'; document.getElementById('transferBox').style.display = method === 'Transfer' ? 'block' : 'none'; }
+        function simpanRekeningAuto() { APP_DATA.settings.bankName = document.getElementById('bankName').value; APP_DATA.settings.noRek = document.getElementById('noRek').value; saveData(); }
 
         function simpanTransaksi() {
-            let payMethod = document.querySelector('input[name="paymentMethod"]:checked');
-            if(!payMethod) return showAlert("Metode Pembayaran", "Mohon pilih Metode Pembayaran terlebih dahulu!");
-            
+            let payMethod = document.querySelector('input[name="paymentMethod"]:checked'); if(!payMethod) return showAlert("Info", "Pilih Metode Pembayaran!");
             let items = [], total = 0, totalModal = 0, isValid = true;
-            document.querySelectorAll('.item-row').forEach(row => {
-                let nama = row.querySelector('.item-nama').value.trim(), qty = Number(row.querySelector('.item-qty').value) || 0, harga = Number(row.querySelector('.item-harga').value) || 0, modalS = Number(row.querySelector('.item-modal').value) || 0;
-                if(!nama || harga <= 0) isValid = false;
-                else { let sub = qty * harga; let subMod = qty * modalS; items.push({nama, qty, harga, subtotal: sub, modalSatuan: modalS, subtotalModal: subMod}); total += sub; totalModal += subMod; }
-            });
-
-            if(!isValid || items.length === 0) return showAlert("Form Belum Lengkap", "Mohon lengkapi Nama Produk dan Harga Jual pada semua baris!");
-            
+            document.querySelectorAll('.item-row').forEach(row => { let nama = row.querySelector('.item-nama').value.trim(), qty = Number(row.querySelector('.item-qty').value) || 0, harga = Number(row.querySelector('.item-harga').value) || 0, modalS = Number(row.querySelector('.item-modal').value) || 0; if(!nama || harga <= 0) isValid = false; else { let sub = qty * harga; let subMod = qty * modalS; items.push({nama, qty, harga, subtotal: sub, modalSatuan: modalS, subtotalModal: subMod}); total += sub; totalModal += subMod; } });
+            if(!isValid || items.length === 0) return showAlert("Info", "Lengkapi Nama dan Harga Produk!");
             let uangBayar = 0, kembalian = 0, bankName = '', noRek = '';
-            if(payMethod.value === 'Tunai') {
-                uangBayar = Number(document.getElementById('uangBayar').value) || 0; kembalian = uangBayar - total;
-                if(kembalian < 0) return showAlert("Pembayaran Tunai", "Uang diterima kurang dari total tagihan!");
-            } else if(payMethod.value === 'Transfer') {
-                bankName = APP_DATA.settings.bankName || '-'; noRek = APP_DATA.settings.noRek || '-';
-            }
-
-            let indexID = APP_DATA.transactions.length + 1;
-            let newTx = { indexID, idSync: Date.now(), waktu: new Date().toLocaleString('id-ID'), nota: document.getElementById('noNota').value, metode: payMethod.value, items, total, totalModal, totalLaba: total - totalModal, uangBayar, kembalian, bankName, noRek };
-            APP_DATA.transactions.push(newTx); APP_DATA.unsyncedIds.push(newTx.idSync);
-            saveData(); syncDataBackground(); tampilkanModalSukses(newTx);
+            if(payMethod.value === 'Tunai') { uangBayar = Number(document.getElementById('uangBayar').value) || 0; kembalian = uangBayar - total; if(kembalian < 0) return showAlert("Info", "Uang Tunai Kurang dari Total Belanja!"); } else if(payMethod.value === 'Transfer') { bankName = APP_DATA.settings.bankName || '-'; noRek = APP_DATA.settings.noRek || '-'; }
+            let indexID = APP_DATA.transactions.length + 1; let newTx = { indexID, idSync: Date.now(), waktu: new Date().toLocaleString('id-ID'), nota: document.getElementById('noNota').value, metode: payMethod.value, items, total, totalModal, totalLaba: total - totalModal, uangBayar, kembalian, bankName, noRek };
+            APP_DATA.transactions.push(newTx); APP_DATA.unsyncedIds.push(newTx.idSync); saveData(); syncDataBackground(); tampilkanModalSukses(newTx);
         }
 
         function getStrukHTML(tx) {
             let itemStr = tx.items.map(i => `<div><b>${i.nama}</b></div><div>${i.qty} x Rp ${Number(i.harga).toLocaleString('id-ID')} = Rp ${Number(i.subtotal).toLocaleString('id-ID')}</div>`).join('');
-            let extra = tx.metode === 'Tunai' ? `<div>Tunai   : Rp ${Number(tx.uangBayar).toLocaleString('id-ID')}</div><div>Kembali : Rp ${Number(tx.kembalian).toLocaleString('id-ID')}</div>` : tx.metode === 'Transfer' ? `<div>Bank : ${tx.bankName}</div><div>Rek  : ${tx.noRek}</div>` : '';
-            return `<div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">${APP_DATA.settings.storeName}</div><div style="text-align:center; font-size:10px; margin-bottom:10px;">${APP_DATA.settings.address}</div><div style="border-bottom:1px dashed #000; margin-bottom:5px;"></div><div>No Nota : ${tx.nota}</div><div>Tanggal : ${tx.waktu}</div><div>Index   : #${tx.indexID}</div><div style="border-bottom:1px dashed #000; margin-top:5px; margin-bottom:5px;"></div>${itemStr}<div style="border-bottom:1px dashed #000; margin-top:5px; margin-bottom:5px;"></div><div style="text-align:right; font-weight:bold; font-size:13px; margin-top:5px;">TOTAL: Rp ${Number(tx.total).toLocaleString('id-ID')}</div><div style="margin-top:5px;">Bayar : ${tx.metode}</div>${extra}<div style="border-bottom:1px dashed #000; margin-top:5px; margin-bottom:5px;"></div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.footerMsg}</div>`;
+            let extra = tx.metode === 'Tunai' ? `<div>Tunai: Rp ${Number(tx.uangBayar).toLocaleString('id-ID')}</div><div>Kembali: Rp ${Number(tx.kembalian).toLocaleString('id-ID')}</div>` : tx.metode === 'Transfer' ? `<div>Bank: ${tx.bankName}</div><div>Rek: ${tx.noRek}</div>` : '';
+            return `<div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">${APP_DATA.settings.storeName}</div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.address}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div>No Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div>${itemStr}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:right; font-weight:bold;">TOTAL: Rp ${Number(tx.total).toLocaleString('id-ID')}</div><div>Bayar: ${tx.metode}</div>${extra}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.footerMsg}</div>`;
         }
 
-        function tampilkanModalSukses(tx) {
-            document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx);
-            document.getElementById('btnCetakNota').onclick = () => { document.getElementById('printArea').innerHTML = getStrukHTML(tx); window.print(); };
-            document.getElementById('btnKirimWA').onclick = () => kirimWA(tx);
-            bsModalNota.show();
-        }
-
-        function kirimWA(tx) {
-            let itemStr = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A');
-            let extra = tx.metode === 'Tunai' ? `Tunai   : Rp ${Number(tx.uangBayar).toLocaleString('id-ID')}%0AKembalian: Rp ${Number(tx.kembalian).toLocaleString('id-ID')}` : tx.metode === 'Transfer' ? `Bank    : ${tx.bankName}%0ARekening: ${tx.noRek}` : '';
-            let text = `*${APP_DATA.settings.storeName}*%0A--------------------------------%0ANo Nota : ${tx.nota}%0AWaktu   : ${tx.waktu}%0ADaftar Produk:%0A${itemStr}%0A--------------------------------%0A*Total   : Rp ${Number(tx.total).toLocaleString('id-ID')}*%0AMetode  : ${tx.metode}%0A${extra}%0A--------------------------------%0A${APP_DATA.settings.footerMsg}`;
-            window.open(`https://wa.me/?text=${text}`, '_blank');
-        }
-
-        function aksiOrderBaru() {
-            bsModalNota.hide(); document.getElementById('itemsContainer').innerHTML = ''; tambahBaris();
-            document.getElementById('uangBayar').value = ''; let mChecked = document.querySelector('input[name="paymentMethod"]:checked'); if(mChecked) mChecked.checked = false;
-            togglePayment(); generateNoNota(); hitungTotal();
-        }
+        function tampilkanModalSukses(tx) { document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); document.getElementById('btnCetakNota').onclick = () => { document.getElementById('printArea').innerHTML = getStrukHTML(tx); window.print(); }; document.getElementById('btnKirimWA').onclick = () => kirimWA(tx); bsModalNota.show(); }
+        function kirimWA(tx) { let itemStr = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A'); let text = `*${APP_DATA.settings.storeName}*%0A-----------------%0A*Total: Rp ${Number(tx.total).toLocaleString('id-ID')}*%0A-----------------%0ADetail:%0A${itemStr}%0A%0A${APP_DATA.settings.footerMsg}`; window.open(`https://wa.me/?text=${text}`, '_blank'); }
+        function aksiOrderBaru() { bsModalNota.hide(); document.getElementById('itemsContainer').innerHTML = ''; tambahBaris(); document.getElementById('uangBayar').value = ''; togglePayment(); generateNoNota(); hitungTotal(); }
         function aksiLaporan() { bsModalNota.hide(); switchTab('laporan'); }
 
-        // ----------------------------------------------------
-        // LAPORAN & REKAP
-        // ----------------------------------------------------
         function renderLaporan() {
-            let container = document.getElementById('laporanContainer');
-            if(APP_DATA.transactions.length === 0) { container.innerHTML = '<div class="text-center text-muted p-4 bg-light rounded shadow-sm">Belum ada data transaksi.</div>'; return; }
+            let container = document.getElementById('laporanContainer'); if(APP_DATA.transactions.length === 0) { container.innerHTML = '<div class="text-center text-muted p-4 bg-light rounded shadow-sm">Belum ada transaksi.</div>'; return; }
             let html = '';
             [...APP_DATA.transactions].reverse().forEach(tx => {
                 let badgeSync = !APP_DATA.unsyncedIds.includes(tx.idSync) ? `<span class="badge bg-success bg-opacity-10 text-success border border-success ms-1" style="font-size:9px;"><i class="bi bi-cloud-check"></i> Disinkron</span>` : `<span class="badge bg-warning bg-opacity-10 text-dark border border-warning ms-1" style="font-size:9px;">Pending</span>`;
-                let infoBayar = tx.metode === 'Tunai' ? `Bayar: Rp ${Number(tx.uangBayar).toLocaleString('id-ID')} | Kembali: Rp ${Number(tx.kembalian).toLocaleString('id-ID')}` : tx.metode === 'Transfer' ? `Bank: ${tx.bankName} | Rek: ${tx.noRek}` : `Pembayaran via QRIS`;
-                let labaText = tx.totalLaba !== undefined ? `<div style="font-size: 10px; color: #198754; font-weight: 600; margin-top:2px;">Laba: Rp ${Number(tx.totalLaba).toLocaleString('id-ID')}</div>` : "";
-                
-                html += `<div class="card shadow-sm border-0 border-start border-4 border-primary"><div class="card-body p-3"><div class="d-flex justify-content-between mb-1 border-bottom pb-1"><span class="fw-bold small text-dark">#${tx.indexID} &bull; ${tx.waktu}</span><small class="text-muted" style="font-size:10px;">${tx.nota}</small></div><div class="d-flex justify-content-between align-items-center mt-2"><div><div class="fw-bold text-dark" style="font-size:13px;">${tx.items.map(i=>i.nama + ` (${i.qty}x)`).join(', ')}</div><div style="font-size: 11px; color: #666; margin-top:2px;">Metode: <span class="bg-primary bg-opacity-10 text-primary px-1 rounded fw-bold">${tx.metode}</span> ${badgeSync}</div><div style="font-size: 10px; color: #777;">${infoBayar}</div>${labaText}</div><div class="fw-bold text-primary fs-6 text-end">Rp ${Number(tx.total).toLocaleString('id-ID')}</div></div><div class="d-flex gap-2 justify-content-end border-top pt-2 mt-2"><button class="btn btn-sm btn-outline-primary" style="font-size:11px;" onclick="(function(){document.getElementById('printArea').innerHTML=getStrukHTML(APP_DATA.transactions.find(t=>t.indexID===${tx.indexID}));window.print();})()"><i class="bi bi-printer"></i> Cetak</button><button class="btn btn-sm btn-success" style="font-size:11px;" onclick="kirimWA(APP_DATA.transactions.find(t=>t.indexID===${tx.indexID}))"><i class="bi bi-whatsapp"></i> WA</button></div></div></div>`;
-            });
-            container.innerHTML = html;
+                html += `<div class="card shadow-sm border-0 border-start border-4 border-primary"><div class="card-body p-3"><div class="d-flex justify-content-between mb-1 pb-1 border-bottom"><span class="fw-bold small">#${tx.indexID} &bull; ${tx.waktu}</span></div><div class="d-flex justify-content-between align-items-center mt-2"><div><div class="fw-bold" style="font-size:13px;">${tx.items.map(i=>i.nama).join(', ')}</div><div style="font-size: 11px;">Metode: ${tx.metode} ${badgeSync}</div></div><div class="fw-bold text-primary fs-6">Rp ${Number(tx.total).toLocaleString('id-ID')}</div></div><div class="d-flex gap-2 justify-content-end border-top pt-2 mt-2"><button class="btn btn-sm btn-outline-primary" style="font-size:11px;" onclick="(function(){document.getElementById('printArea').innerHTML=getStrukHTML(APP_DATA.transactions.find(t=>t.indexID===${tx.indexID}));window.print();})()">Cetak</button></div></div></div>`;
+            }); container.innerHTML = html;
         }
 
-        function konfirmasiResetLaporan() {
-            showConfirm("Konfirmasi Reset", "Apakah Anda yakin ingin menghapus seluruh riwayat data transaksi lokal di HP ini? (Data di Google Sheets tidak akan hilang)", () => { APP_DATA.transactions = []; APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); showAlert("Berhasil", "Semua riwayat laporan lokal berhasil direset."); });
-        }
+        function konfirmasiResetLaporan() { showConfirm("Reset", "Hapus seluruh riwayat lokal di HP ini?", () => { APP_DATA.transactions = []; APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); }); }
+        function bukaRekap() { let tPend = 0, tMod = 0, tLab = 0; APP_DATA.transactions.forEach(t => { tPend += t.total; tMod += t.totalModal; tLab += t.totalLaba; }); document.getElementById('recapTx').innerText = APP_DATA.transactions.length; document.getElementById('recapPendapatan').innerText = `Rp ${tPend.toLocaleString('id-ID')}`; document.getElementById('recapModalTxt').innerText = `Rp ${tMod.toLocaleString('id-ID')}`; document.getElementById('recapLaba').innerText = `Rp ${tLab.toLocaleString('id-ID')}`; bsModalRekap.show(); }
 
-        function bukaRekap() {
-            let tPend = 0, tMod = 0, tLab = 0, tTunai = 0, tQris = 0, tTrans = 0; 
-            APP_DATA.transactions.forEach(t => { 
-                tPend += t.total; tMod += t.totalModal; tLab += t.totalLaba; 
-                if(t.metode === 'Tunai') tTunai += t.total; else if(t.metode === 'QRIS') tQris += t.total; else if(t.metode === 'Transfer') tTrans += t.total;
-            });
-            document.getElementById('recapTx').innerText = APP_DATA.transactions.length; 
-            document.getElementById('recapPendapatan').innerText = `Rp ${tPend.toLocaleString('id-ID')}`;
-            document.getElementById('recapModalTxt').innerText = `Rp ${tMod.toLocaleString('id-ID')}`; 
-            document.getElementById('recapLaba').innerText = `Rp ${tLab.toLocaleString('id-ID')}`;
-            document.getElementById('recapTunai').innerText = `Rp ${tTunai.toLocaleString('id-ID')}`; 
-            document.getElementById('recapQris').innerText = `Rp ${tQris.toLocaleString('id-ID')}`; 
-            document.getElementById('recapTransfer').innerText = `Rp ${tTrans.toLocaleString('id-ID')}`;
-            bsModalRekap.show();
-        }
-
-        // ----------------------------------------------------
-        // PENGATURAN & TEMA
-        // ----------------------------------------------------
         function applyTheme(theme) {
-            document.documentElement.setAttribute('data-bs-theme', theme === 'dark' ? 'dark' : 'light');
-            let color = theme === 'ocean' ? '#0d6efd' : theme === 'emerald' ? '#198754' : theme === 'indigo' ? '#6610f2' : theme === 'sunset' ? '#fd7e14' : '#0d6efd';
+            document.documentElement.setAttribute('data-bs-theme', theme === 'dark' ? 'dark' : 'light'); let color = theme === 'ocean' ? '#0d6efd' : theme === 'emerald' ? '#198754' : theme === 'indigo' ? '#6610f2' : theme === 'sunset' ? '#fd7e14' : '#0d6efd';
             let cssTag = document.getElementById('dynamic-theme');
-            if(theme !== 'dark') {
-                cssTag.innerHTML = `:root { --bs-primary: ${color}; } .text-primary{color:${color}!important;} .bg-primary{background-color:${color}!important;color:#fff!important;} .btn-primary{background-color:${color}!important;border-color:${color}!important;color:#fff;} .btn-outline-primary{color:${color}!important;border-color:${color}!important;} .btn-outline-primary:hover, .btn-check:checked+.btn-outline-primary{background-color:${color}!important;color:#fff!important;} .border-primary{border-color:${color}!important;} .bottom-nav .nav-link.active{color:${color}!important; border-top-color:${color}!important;}`;
-                document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
-            } else {
-                cssTag.innerHTML = `.bottom-nav{background-color:#212529!important;border-top:1px solid #343a40;} .bottom-nav .nav-link.active{color:#0d6efd!important; border-top-color:#0d6efd!important;} .card, .bg-white, .bg-light {background-color:#212529!important; border-color:#343a40!important;} input, select {background-color:#343a40!important; color:#fff!important; border-color:#495057!important;}`;
-                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#212529');
-            }
+            if(theme !== 'dark') { cssTag.innerHTML = `:root { --bs-primary: ${color}; } .text-primary{color:${color}!important;} .bg-primary{background-color:${color}!important;color:#fff!important;} .btn-primary{background-color:${color}!important;border-color:${color}!important;color:#fff;} .btn-outline-primary{color:${color}!important;border-color:${color}!important;}`; document.querySelector('meta[name="theme-color"]').setAttribute('content', color); } 
+            else { cssTag.innerHTML = `.bottom-nav{background-color:#212529!important;} .card, .bg-white, .bg-light {background-color:#212529!important; border-color:#343a40!important;} input, select {background-color:#343a40!important; color:#fff!important; border-color:#495057!important;}`; document.querySelector('meta[name="theme-color"]').setAttribute('content', '#212529'); }
             APP_DATA.settings.theme = theme;
         }
 
-        function updateUIFromSettings() {
-            let s = APP_DATA.settings;
-            // Header UI (Terpisah dari nama struk persis file asli)
-            document.getElementById('headerTitleUI').innerText = s.headerTitle || s.storeName;
-            document.getElementById('headerStoreAddress').innerText = s.address;
-            
-            // Form Pengaturan
-            document.getElementById('settingStoreName').value = s.storeName; 
-            document.getElementById('settingHeaderTitle').value = s.headerTitle || s.storeName;
-            document.getElementById('settingAddress').value = s.address;
-            document.getElementById('settingFooterMsg').value = s.footerMsg; 
-            document.getElementById('settingGasUrl').value = s.gasUrl;
-            document.getElementById('settingTheme').value = s.theme; 
-            applyTheme(s.theme);
-            
-            // Rekening
-            document.getElementById('bankName').value = s.bankName || '';
-            document.getElementById('noRek').value = s.noRek || '';
-
-            if(s.gasUrl && gasLocked) { document.getElementById('settingGasUrl').setAttribute('readonly', 'true'); document.getElementById('btnLockGas').innerHTML = '<i class="bi bi-lock-fill"></i>'; document.getElementById('btnLockGas').classList.replace('btn-primary', 'btn-secondary'); }
-            if(s.qrisImage) { document.getElementById('qrisPreviewSet').src = s.qrisImage; document.getElementById('qrisImg').src = s.qrisImage; }
-        }
-
-        function simpanQRIS(e) {
-            let file = e.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = (ev) => { APP_DATA.settings.qrisImage = ev.target.result; document.getElementById('qrisPreviewSet').src = ev.target.result; document.getElementById('qrisImg').src = ev.target.result; }; reader.readAsDataURL(file); }
-        }
-
-        function toggleLockGas() {
-            gasLocked = !gasLocked; let inp = document.getElementById('settingGasUrl'); let btn = document.getElementById('btnLockGas');
-            if(gasLocked) { inp.setAttribute('readonly', 'true'); btn.innerHTML = '<i class="bi bi-lock-fill"></i>'; btn.classList.replace('btn-primary', 'btn-secondary'); APP_DATA.settings.gasUrl = inp.value.trim(); saveData(); } 
-            else { inp.removeAttribute('readonly'); btn.innerHTML = '<i class="bi bi-unlock-fill"></i>'; btn.classList.replace('btn-secondary', 'btn-primary'); inp.focus(); }
-        }
-
-        function simpanPengaturanAction() {
-            APP_DATA.settings.storeName = document.getElementById('settingStoreName').value || 'Toko'; 
-            APP_DATA.settings.headerTitle = document.getElementById('settingHeaderTitle').value || 'Kasir'; 
-            APP_DATA.settings.address = document.getElementById('settingAddress').value || '-'; 
-            APP_DATA.settings.footerMsg = document.getElementById('settingFooterMsg').value;
-            if(!gasLocked) { APP_DATA.settings.gasUrl = document.getElementById('settingGasUrl').value.trim(); toggleLockGas(); }
-            applyTheme(document.getElementById('settingTheme').value); saveData(); updateUIFromSettings();
-            
-            if(navigator.onLine && APP_DATA.settings.gasUrl) { fetch(APP_DATA.settings.gasUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'sync_settings', payload: APP_DATA.settings }) }).catch(e => {}); }
-            showAlert('Berhasil', 'Pengaturan toko & header berhasil disimpan!');
-        }
-
-        function konfirmasiLogout() { showConfirm("Log Out / Hapus Sesi", "Apakah Anda yakin ingin menghapus seluruh sesi data transaksi & pengaturan dari HP ini?", () => { localStorage.removeItem('APP_DATA_POS'); location.reload(); }); }
+        function updateUIFromSettings() { let s = APP_DATA.settings; document.getElementById('headerTitleUI').innerText = s.headerTitle || s.storeName; document.getElementById('headerStoreAddress').innerText = s.address; document.getElementById('settingStoreName').value = s.storeName; document.getElementById('settingHeaderTitle').value = s.headerTitle || s.storeName; document.getElementById('settingAddress').value = s.address; document.getElementById('settingFooterMsg').value = s.footerMsg; document.getElementById('settingGasUrl').value = s.gasUrl; document.getElementById('settingTheme').value = s.theme; applyTheme(s.theme); document.getElementById('bankName').value = s.bankName || ''; document.getElementById('noRek').value = s.noRek || ''; if(s.gasUrl && gasLocked) { document.getElementById('settingGasUrl').setAttribute('readonly', 'true'); document.getElementById('btnLockGas').innerHTML = '<i class="bi bi-lock-fill"></i>'; document.getElementById('btnLockGas').classList.replace('btn-primary', 'btn-secondary'); } if(s.qrisImage) { document.getElementById('qrisPreviewSet').src = s.qrisImage; document.getElementById('qrisImg').src = s.qrisImage; } }
+        function simpanQRIS(e) { let file = e.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = (ev) => { APP_DATA.settings.qrisImage = ev.target.result; document.getElementById('qrisPreviewSet').src = ev.target.result; document.getElementById('qrisImg').src = ev.target.result; }; reader.readAsDataURL(file); } }
+        function toggleLockGas() { gasLocked = !gasLocked; let inp = document.getElementById('settingGasUrl'); let btn = document.getElementById('btnLockGas'); if(gasLocked) { inp.setAttribute('readonly', 'true'); btn.innerHTML = '<i class="bi bi-lock-fill"></i>'; btn.classList.replace('btn-primary', 'btn-secondary'); APP_DATA.settings.gasUrl = inp.value.trim(); saveData(); } else { inp.removeAttribute('readonly'); btn.innerHTML = '<i class="bi bi-unlock-fill"></i>'; btn.classList.replace('btn-secondary', 'btn-primary'); inp.focus(); } }
+        function simpanPengaturanAction() { APP_DATA.settings.storeName = document.getElementById('settingStoreName').value || 'Toko'; APP_DATA.settings.headerTitle = document.getElementById('settingHeaderTitle').value || 'Kasir'; APP_DATA.settings.address = document.getElementById('settingAddress').value || '-'; APP_DATA.settings.footerMsg = document.getElementById('settingFooterMsg').value; if(!gasLocked) { APP_DATA.settings.gasUrl = document.getElementById('settingGasUrl').value.trim(); toggleLockGas(); } applyTheme(document.getElementById('settingTheme').value); saveData(); updateUIFromSettings(); showAlert('Berhasil', 'Pengaturan disimpan!'); }
+        function konfirmasiLogout() { showConfirm("Hapus", "Hapus seluruh data di HP?", () => { localStorage.removeItem('APP_DATA_POS'); location.reload(); }); }
         function backupData() { let a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(APP_DATA)); a.download = "backup_kasir_" + Date.now() + ".json"; a.click(); }
-        function restoreData(e) {
-            let file = e.target.files[0]; if(!file) return; let reader = new FileReader();
-            reader.onload = (ev) => { try { let d = JSON.parse(ev.target.result); if(d.settings && d.transactions) { APP_DATA = d; saveData(); showAlert('Berhasil', 'Data pulih! Memuat ulang..'); setTimeout(()=>location.reload(), 1500); } else throw "Format Salah"; } catch(err) { showAlert('Gagal', 'File JSON tidak valid.'); } }; reader.readAsText(file);
-        }
+        function restoreData(e) { let file = e.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = (ev) => { try { let d = JSON.parse(ev.target.result); if(d.settings && d.transactions) { APP_DATA = d; saveData(); showAlert('Berhasil', 'Data pulih! Memuat ulang..'); setTimeout(()=>location.reload(), 1500); } else throw "Format Salah"; } catch(err) { showAlert('Gagal', 'File tidak valid.'); } }; reader.readAsText(file); }
 
+        // ================= KONEKSI API GOOGLE SHEETS =================
         async function syncData() {
             let url = APP_DATA.settings.gasUrl; if (!url) return showAlert('Info', 'URL Apps Script kosong.');
             let dataSync = APP_DATA.transactions.filter(t => APP_DATA.unsyncedIds.includes(t.idSync));
-            if(dataSync.length === 0) return showAlert('Sukses', 'Semua transaksi sudah tersinkronisasi ke Google Sheets.');
+            if(dataSync.length === 0) return showAlert('Info', 'Semua transaksi sudah tersimpan di cloud.');
+            
             let btn = document.getElementById('btnSync'); btn.innerHTML = '<div class="spinner-border spinner-border-sm text-primary"></div>'; btn.disabled = true;
             try {
-                let response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'sync_tx', payload: dataSync }) });
+                // REDIRECT FOLLOW DITAMBAHKAN AGAR TIDAK ERROR CORS
+                let response = await fetch(url, { 
+                    method: 'POST', 
+                    redirect: 'follow', 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                    body: JSON.stringify({ action: 'sync_tx', payload: dataSync }) 
+                });
+                
+                if (!response.ok) throw new Error("Network response was not ok");
+                
                 let resJSON = await response.json();
-                if (resJSON.status === 'success') { APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); showAlert('Berhasil', `Total ${dataSync.length} transaksi di-backup.`); } 
-                else { showAlert('Gagal Sync', resJSON.message); }
-            } catch(e) { showAlert('Gagal Sync', 'Koneksi terputus / URL salah.'); } 
-            finally { btn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill fs-5"></i>'; btn.disabled = false; }
+                if (resJSON.status === 'success') { 
+                    APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); 
+                    showAlert('Berhasil', `${dataSync.length} transaksi di-backup.`); 
+                } else { 
+                    showAlert('Gagal Sync', resJSON.message); 
+                }
+            } catch(e) { 
+                showAlert('Gagal Koneksi', 'Koneksi ditolak! Pastikan URL benar.'); 
+            } finally { 
+                btn.innerHTML = '<i class="bi bi-cloud-arrow-up-fill fs-5"></i>'; btn.disabled = false; 
+            }
         }
+        
         function syncDataBackground() { if(navigator.onLine && APP_DATA.settings.gasUrl) { syncData(); } }
         
         async function tarikDataCloud() {
-            let url = APP_DATA.settings.gasUrl; if (!url) return showAlert('Info', 'Silakan isi & kunci URL Web App Anda terlebih dahulu.');
-            showConfirm("Tarik Data", "Unduh histori dari Google Sheets (menimpa data lokal saat ini)?", async () => {
+            let url = APP_DATA.settings.gasUrl; if (!url) return showAlert('Gagal', 'Isi URL Web App Anda terlebih dahulu.');
+            showConfirm("Tarik Data", "Unduh data dari Google Sheets (menimpa data lokal saat ini)?", async () => {
                 try {
-                    let res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'restore' }) });
+                    let res = await fetch(url, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'restore' }) });
                     let resJSON = await res.json();
                     if (resJSON.status === 'success' && resJSON.data) {
                         if(resJSON.data.settings) { Object.assign(APP_DATA.settings, resJSON.data.settings); }
-                        if(resJSON.data.transactions && resJSON.data.transactions.length > 0) { APP_DATA.transactions = resJSON.data.transactions; APP_DATA.unsyncedIds = []; }
-                        saveData(); showAlert('Berhasil', 'Data pulih dari Cloud!'); setTimeout(()=>location.reload(), 1500);
+                        if(resJSON.data.transactions) { APP_DATA.transactions = resJSON.data.transactions; APP_DATA.unsyncedIds = []; }
+                        saveData(); showAlert('Berhasil', 'Data pulih!'); setTimeout(()=>location.reload(), 1500);
                     }
-                } catch(e) { showAlert('Error', 'Gagal menarik data.'); }
+                } catch(e) { showAlert('Error', 'Gagal menarik data dari server.'); }
             });
         }
     </script>
