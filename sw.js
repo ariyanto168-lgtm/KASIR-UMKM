@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v99.02'; // Versi Cache PWA
+const CACHE_NAME = 'kasir-pos-v99.03'; // Versi Cache PWA
 const urlsToCache = [
   './',
   './index.html',
