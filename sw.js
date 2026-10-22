@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v99.03'; // Versi Cache PWA
+const CACHE_NAME = 'kasir-pos-v99.03';
 const urlsToCache = [
   './',
   './index.html',
@@ -21,31 +21,20 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      // 1. Mengembalikan aset yang di-cache jika tersedia
-      if (response) {
-        return response;
-      }
-      
-      // 2. Fetch aset ke internet jika tidak ada di cache
+      if (response) return response;
       return fetch(event.request).then(fetchRes => {
-        // Abaikan caching untuk request ke API Backend (Google Apps Script / Method POST)
         if(event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
             return fetchRes;
         }
-        
-        // Simpan aset baru ke dalam cache
         return caches.open(CACHE_NAME).then(cache => {
           cache.put(event.request, fetchRes.clone());
           return fetchRes;
         });
       });
-    }).catch(() => {
-        // Fallback offline murni (tidak lakukan apa-apa, biarkan JS di index.html menangani error jaringan POST)
-    })
+    }).catch(() => {})
   );
 });
 
-// Menghapus cache versi lama secara otomatis ketika ada pembaruan aplikasi
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
