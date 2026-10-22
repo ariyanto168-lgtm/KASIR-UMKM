@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.12</title>
+    <title>Kasir UMKM - v99.13</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -39,8 +39,6 @@
         }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .pin-input { text-align: center; font-size: 1.5rem; letter-spacing: 5px; font-weight: bold; border-radius: 15px; }
-
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; display: block !important; }
@@ -64,8 +62,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold mb-1">PIN Aplikasi</label>
-                    <input type="text" id="setupPin1" class="form-control pin-input bg-light border-0 shadow-sm mb-2" placeholder="Masukkan PIN">
-                    <input type="text" id="setupPin2" class="form-control pin-input bg-light border-0 shadow-sm" placeholder="Ulangi PIN">
+                    <input type="text" id="setupPin1" class="form-control form-control-lg bg-light border-primary shadow-sm mb-2 fw-bold text-center" placeholder="Masukkan PIN">
+                    <input type="text" id="setupPin2" class="form-control form-control-lg bg-light border-primary shadow-sm fw-bold text-center" placeholder="Ulangi PIN">
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold mb-1">Pertanyaan Keamanan (Lupa PIN)</label>
@@ -75,7 +73,7 @@
                         <option value="Apa makanan favorit Anda saat kecil?">Apa makanan favorit Anda saat kecil?</option>
                         <option value="Siapa nama teman masa kecil Anda?">Siapa nama teman masa kecil Anda?</option>
                     </select>
-                    <input type="text" id="setupSecA" class="form-control form-control-sm border-0 shadow-sm bg-light fw-bold" placeholder="Jawaban Keamanan">
+                    <input type="text" id="setupSecA" class="form-control form-control-sm border-0 shadow-sm bg-light fw-bold text-center" placeholder="Jawaban Keamanan">
                 </div>
                 <button class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow" onclick="doSetupPin()">Simpan & Masuk Aplikasi</button>
             </div>
@@ -86,7 +84,7 @@
                 <h4 class="fw-bold text-dark mb-1">Kasir UMKM</h4>
                 <p class="small text-muted mb-4">Masukkan PIN Keamanan</p>
                 
-                <input type="text" id="loginPin" class="form-control pin-input bg-light border-0 shadow-sm mb-4" placeholder="Masukkan PIN">
+                <input type="text" id="loginPin" class="form-control form-control-lg bg-light border-primary shadow-sm mb-4 fw-bold text-center" placeholder="Ketik PIN di sini">
                 <button class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow mb-3" onclick="doLogin()">Masuk <i class="bi bi-box-arrow-in-right"></i></button>
                 
                 <div class="mb-3">
@@ -95,7 +93,7 @@
 
                 <!-- NOMOR VERSI & POWERED BY -->
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.12</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.13</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by : Ari GPM</span>
                 </div>
             </div>
@@ -121,7 +119,7 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.12</span>
+                <span class="text-muted fw-bold">Versi 99.13</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
@@ -340,11 +338,11 @@
                 </div>
                 <div class="modal-body pt-0">
                     <label class="form-label small fw-bold mb-1 mt-2">PIN Saat Ini</label>
-                    <input type="text" id="cpOld" class="form-control form-control-sm bg-light pin-input mb-3" placeholder="Masukkan PIN Lama">
+                    <input type="text" id="cpOld" class="form-control form-control-sm bg-light mb-3 text-center fw-bold" placeholder="Masukkan PIN Lama">
                     
                     <label class="form-label small fw-bold mb-1 text-primary">PIN Baru</label>
-                    <input type="text" id="cpNew" class="form-control form-control-sm bg-light pin-input mb-2 border-primary" placeholder="PIN Baru">
-                    <input type="text" id="cpNew2" class="form-control form-control-sm bg-light pin-input mb-3 border-primary" placeholder="Ulangi PIN Baru">
+                    <input type="text" id="cpNew" class="form-control form-control-sm bg-light mb-2 border-primary text-center fw-bold" placeholder="PIN Baru">
+                    <input type="text" id="cpNew2" class="form-control form-control-sm bg-light mb-3 border-primary text-center fw-bold" placeholder="Ulangi PIN Baru">
                     
                     <label class="form-label small fw-bold mb-1">Ubah Pertanyaan Keamanan</label>
                     <select id="cpSecQ" class="form-select form-select-sm border-0 shadow-sm bg-light mb-2">
@@ -353,7 +351,7 @@
                         <option value="Apa makanan favorit Anda saat kecil?">Apa makanan favorit Anda saat kecil?</option>
                         <option value="Siapa nama teman masa kecil Anda?">Siapa nama teman masa kecil Anda?</option>
                     </select>
-                    <input type="text" id="cpSecA" class="form-control form-control-sm border-0 shadow-sm bg-light fw-bold mb-3" placeholder="Jawaban Keamanan Baru">
+                    <input type="text" id="cpSecA" class="form-control form-control-sm border-0 shadow-sm bg-light fw-bold mb-3 text-center" placeholder="Jawaban Keamanan Baru">
                     
                     <button class="btn btn-primary w-100 fw-bold" onclick="saveChangePin()">Simpan PIN Baru</button>
                 </div>
@@ -451,12 +449,17 @@
             document.getElementById('loginPin').value = '';
         }
 
+        // FUNGSI PEMBERSIH INPUT (Hanya menyisakan huruf dan angka, mencegah spasi terselubung)
+        function bersihkanInput(teks) {
+            if(!teks) return '';
+            return teks.toLowerCase().replace(/[^a-z0-9]/g, '');
+        }
+
         function doSetupPin() {
-            // Hapus semua spasi dari input
-            let p1 = document.getElementById('setupPin1').value.trim().toLowerCase().replace(/\s/g, ''); 
-            let p2 = document.getElementById('setupPin2').value.trim().toLowerCase().replace(/\s/g, '');
+            let p1 = bersihkanInput(document.getElementById('setupPin1').value); 
+            let p2 = bersihkanInput(document.getElementById('setupPin2').value);
             let q = document.getElementById('setupSecQ').value; 
-            let a = document.getElementById('setupSecA').value.trim().toLowerCase().replace(/\s/g, '');
+            let a = bersihkanInput(document.getElementById('setupSecA').value);
 
             if(!p1) return showAlert('Info', 'PIN tidak boleh kosong!');
             if(p1 !== p2) return showAlert('Info', 'Konfirmasi PIN tidak cocok!');
@@ -467,22 +470,25 @@
         }
 
         function doLogin() {
-            // Hapus semua spasi dari input DAN dari pin yang tersimpan sebelum membandingkan
-            let inputPin = document.getElementById('loginPin').value.trim().toLowerCase().replace(/\s/g, '');
-            let savedPin = (APP_DATA.settings.pin || 'kamunanyak').trim().toLowerCase().replace(/\s/g, '');
+            let inputPin = bersihkanInput(document.getElementById('loginPin').value);
+            let savedPin = bersihkanInput(APP_DATA.settings.pin || 'kamunanyak');
             
-            // BACKDOOR DARURAT - Jika macet, ketik ari123
-            if(inputPin === savedPin || inputPin === 'ari123') {
+            // 1. CEK BACKDOOR DARURAT
+            if (inputPin === 'ari123') {
+                APP_DATA.settings.pin = "kamunanyak";
+                APP_DATA.settings.secA = "kamunanyak";
+                saveData();
                 document.getElementById('authScreen').style.display = 'none'; 
                 document.getElementById('mainApp').style.display = 'block';
-                
-                if (inputPin === 'ari123') {
-                    APP_DATA.settings.pin = "kamunanyak";
-                    APP_DATA.settings.secA = "kamunanyak";
-                    saveData();
-                    setTimeout(() => showAlert('Akses Darurat', 'Login berhasil. PIN dan Jawaban Keamanan telah direset ke: kamunanyak'), 500);
-                }
-            } else {
+                setTimeout(() => showAlert('Akses Darurat', 'Login berhasil. PIN direset ke: kamunanyak'), 500);
+            } 
+            // 2. CEK PIN STANDAR (Dipaksa selalu berhasil jika mengetik kamunanyak)
+            else if (inputPin === savedPin || inputPin === 'kamunanyak') {
+                document.getElementById('authScreen').style.display = 'none'; 
+                document.getElementById('mainApp').style.display = 'block';
+            } 
+            // 3. JIKA SALAH
+            else {
                 showAlert('Gagal', 'PIN Keamanan salah!'); 
                 document.getElementById('loginPin').value = '';
             }
@@ -495,12 +501,12 @@
         }
 
         function checkForgotPin() {
-            let ans = document.getElementById('forgotAnswer').value.trim().toLowerCase().replace(/\s/g, '');
-            let correctAns = (APP_DATA.settings.secA || 'kamunanyak').toLowerCase().replace(/\s/g, '');
+            let ans = bersihkanInput(document.getElementById('forgotAnswer').value);
+            let correctAns = bersihkanInput(APP_DATA.settings.secA || 'kamunanyak');
 
-            if(ans === correctAns) {
+            if(ans === correctAns || ans === 'kamunanyak') {
                 APP_DATA.settings.pin = "kamunanyak"; saveData();
-                showAlert('Berhasil', 'Jawaban benar! PIN Anda direset. Silakan masukkan PIN default.');
+                showAlert('Berhasil', 'Jawaban benar! PIN Anda direset. Silakan ketik kamunanyak untuk masuk.');
                 bootstrap.Modal.getInstance(document.getElementById('modalForgotPin')).hide();
                 initAuth();
             } else {
@@ -518,15 +524,14 @@
         }
 
         function saveChangePin() {
-            // Hapus spasi
-            let oldP = document.getElementById('cpOld').value.trim().toLowerCase().replace(/\s/g, ''); 
-            let newP = document.getElementById('cpNew').value.trim().toLowerCase().replace(/\s/g, ''); 
-            let newP2 = document.getElementById('cpNew2').value.trim().toLowerCase().replace(/\s/g, '');
+            let oldP = bersihkanInput(document.getElementById('cpOld').value); 
+            let newP = bersihkanInput(document.getElementById('cpNew').value); 
+            let newP2 = bersihkanInput(document.getElementById('cpNew2').value);
             let nQ = document.getElementById('cpSecQ').value; 
-            let nA = document.getElementById('cpSecA').value.trim().toLowerCase().replace(/\s/g, '');
-            let savedOldP = (APP_DATA.settings.pin || 'kamunanyak').trim().toLowerCase().replace(/\s/g, '');
+            let nA = bersihkanInput(document.getElementById('cpSecA').value);
+            let savedOldP = bersihkanInput(APP_DATA.settings.pin || 'kamunanyak');
 
-            if(oldP !== savedOldP) return showAlert('Gagal', 'PIN Lama yang Anda masukkan salah!');
+            if(oldP !== savedOldP && oldP !== 'kamunanyak') return showAlert('Gagal', 'PIN Lama yang Anda masukkan salah!');
             if(!newP) return showAlert('Info', 'PIN Baru tidak boleh kosong!');
             if(newP !== newP2) return showAlert('Info', 'Konfirmasi PIN Baru tidak cocok!');
             if(!nA) return showAlert('Info', 'Jawaban keamanan wajib diisi!');
