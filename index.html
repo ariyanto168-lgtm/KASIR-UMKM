@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.08</title>
+    <title>Kasir UMKM - v99.09</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -85,9 +85,18 @@
                 <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-3" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
                 <h4 class="fw-bold text-dark mb-1">Kasir UMKM</h4>
                 <p class="small text-muted mb-4">Masukkan PIN Keamanan (kamunanyak)</p>
-                <input type="text" id="loginPin" class="form-control pin-input bg-light border-0 shadow-sm mb-4" placeholder="••••">
+                <input type="text" id="loginPin" class="form-control pin-input bg-light border-0 shadow-sm mb-3" placeholder="••••">
                 <button class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow mb-3" onclick="doLogin()">Masuk <i class="bi bi-box-arrow-in-right"></i></button>
-                <a href="#" class="text-decoration-none small text-muted fw-bold" onclick="openForgotPin()">Lupa PIN?</a>
+                
+                <div class="mb-3">
+                    <a href="#" class="text-decoration-none small text-muted fw-bold" onclick="openForgotPin()">Lupa PIN?</a>
+                </div>
+
+                <!-- NOMOR VERSI & POWERED BY DI BAWAH TEKS LUPA PIN -->
+                <div class="pt-2 border-top">
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.09</span>
+                    <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by : Ari GPM</span>
+                </div>
             </div>
 
         </div>
@@ -111,7 +120,7 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.08</span>
+                <span class="text-muted fw-bold">Versi 99.09</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
@@ -413,7 +422,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             bsModalAlert = new bootstrap.Modal(document.getElementById('modalAlert')); bsModalConfirm = new bootstrap.Modal(document.getElementById('modalConfirm')); bsModalNota = new bootstrap.Modal(document.getElementById('modalNota')); bsModalRekap = new bootstrap.Modal(document.getElementById('modalRekap'));
             
-            // Cek Keamanan PIN terlebih dahulu
             initAuth();
 
             updateUIFromSettings(); generateNoNota(); if(document.getElementById('itemsContainer').children.length === 0) tambahBaris(); updateCountReport();
@@ -425,7 +433,6 @@
         // ------------------ LOGIKA KEAMANAN PIN ------------------
         function initAuth() {
             let s = APP_DATA.settings;
-            // Jika PIN belum diset atau kosong, gunakan default "kamunanyak" secara otomatis
             if (!s.pin || s.pin.length === 0) {
                 s.pin = "kamunanyak";
                 s.secQ = s.secQ || "Di kota manakah Anda lahir?";
@@ -470,11 +477,10 @@
 
         function checkForgotPin() {
             let ans = document.getElementById('forgotAnswer').value.trim().toLowerCase();
-            // Jawaban dicocokkan dengan jawaban yang sudah diset (default: kamunanyak)
             let correctAns = (APP_DATA.settings.secA || 'kamunanyak').toLowerCase();
 
             if(ans === correctAns) {
-                APP_DATA.settings.pin = "kamunanyak"; saveData(); // Reset ke default
+                APP_DATA.settings.pin = "kamunanyak"; saveData();
                 showAlert('Berhasil', 'Jawaban benar! PIN Anda telah dikembalikan ke default: <b>kamunanyak</b>');
                 bootstrap.Modal.getInstance(document.getElementById('modalForgotPin')).hide();
                 initAuth();
