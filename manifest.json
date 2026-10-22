@@ -1,16 +1,16 @@
 {
-  "name": "Kasir POS PWA",
-  "short_name": "Kasir POS",
+  "name": "Kasir UMKM PWA",
+  "short_name": "Kasir UMKM",
   "description": "Aplikasi Kasir Toko Modern & Offline",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f8f9fa",
-  "theme_color": "#198754",
+  "theme_color": "#0d6efd",
   "icons": [
     {
-      "src": "logo-kasir.jpg",
+      "src": "logo-kasir.png",
       "sizes": "1024x1024",
-      "type": "image/jpeg"
+      "type": "image/png"
     }
   ]
 }
