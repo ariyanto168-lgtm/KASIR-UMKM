@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v99.10';
+const CACHE_NAME = 'kasir-pos-v99.11';
 const urlsToCache = [
   './',
   './index.html',
@@ -10,11 +10,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => { return cache.addAll(urlsToCache); }));
   self.skipWaiting();
 });
 
@@ -23,27 +19,16 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(response => {
       if (response) return response;
       return fetch(event.request).then(fetchRes => {
-        if(event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
-            return fetchRes;
-        }
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, fetchRes.clone());
-          return fetchRes;
-        });
+        if(event.request.method !== 'GET' || !event.request.url.startsWith('http')) { return fetchRes; }
+        return caches.open(CACHE_NAME).then(cache => { cache.put(event.request, fetchRes.clone()); return fetchRes; });
       });
     }).catch(() => {})
   );
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) return caches.delete(cache);
-        })
-      );
-    })
-  );
+  event.waitUntil(caches.keys().then(cacheNames => {
+    return Promise.all(cacheNames.map(cache => { if (cache !== CACHE_NAME) return caches.delete(cache); }));
+  }));
   self.clients.claim();
 });
