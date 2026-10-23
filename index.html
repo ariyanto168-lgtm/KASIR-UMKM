@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.23</title>
+    <title>Kasir UMKM - v99.24</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.23</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.24</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.23</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.24</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -304,9 +304,9 @@
                     <div class="card-sm bg-primary bg-opacity-10 border border-primary p-2 mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="fw-bold text-primary" style="font-size: 11px;"><i class="bi bi-calendar-check me-1"></i> Rekap Hari Ini</span>
-                            <button class="btn btn-xs btn-success fw-bold rounded-pill px-2" onclick="shareLaporanWA('hari_ini')">
+                            <a id="btnShareWAHariIni" href="#" target="_blank" class="btn btn-xs btn-success fw-bold rounded-pill px-2 text-decoration-none">
                                 <i class="bi bi-whatsapp me-1"></i> Share WA
-                            </button>
+                            </a>
                         </div>
                         <div class="row g-1 text-center pt-1" style="font-size: 10px;">
                             <div class="col-4 border-end">
@@ -327,7 +327,7 @@
                     <div class="card-sm bg-white d-flex justify-content-between align-items-center mb-2">
                         <h6 class="fw-bold mb-0 text-dark" style="font-size:12px;"><i class="bi bi-clock-history me-1 text-primary"></i> Riwayat Transaksi</h6>
                         <div class="d-flex gap-1">
-                            <button class="btn btn-xs btn-outline-success fw-bold rounded-pill" onclick="shareLaporanWA('semua')"><i class="bi bi-whatsapp me-1"></i> Total Rekap</button>
+                            <a id="btnShareWASemua" href="#" target="_blank" class="btn btn-xs btn-outline-success fw-bold rounded-pill text-decoration-none"><i class="bi bi-whatsapp me-1"></i> Total Rekap</a>
                             <button class="btn btn-xs btn-outline-danger fw-bold" onclick="konfirmasiResetLaporan()"><i class="bi bi-trash-fill"></i></button>
                         </div>
                     </div>
@@ -415,19 +415,31 @@
         </div>
     </div>
 
-    <!-- Modal Nota Sukses -->
+    <!-- Modal Nota Sukses (BEBAS STUCK/FREEZE) -->
     <div class="modal fade" id="modalNota" tabindex="-1" data-bs-backdrop="static" style="z-index: 1050;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow" style="border-radius: 16px;">
                 <div class="modal-body p-3 text-center">
                     <i class="bi bi-check-circle-fill text-success mb-0" style="font-size: 3rem;"></i>
                     <h5 class="fw-bold mt-1 text-dark">Sukses!</h5>
+                    
                     <div id="receiptPreview" class="text-start bg-light p-2 border rounded mt-2 mb-3 text-dark" style="font-family: monospace; font-size: 11px; line-height: 1.4;"></div>
+                    
                     <div class="row g-2 mb-2">
-                        <div class="col-6"><button class="btn btn-outline-primary w-100 fw-bold shadow-sm rounded-pill" onclick="cetakNotaSekarang()"><i class="bi bi-printer"></i> Cetak</button></div>
-                        <div class="col-6"><button class="btn btn-success w-100 fw-bold shadow-sm rounded-pill" onclick="kirimWASekarang()"><i class="bi bi-whatsapp"></i> WhatsApp</button></div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-primary w-100 fw-bold shadow-sm rounded-pill" onclick="cetakNotaSekarang()">
+                                <i class="bi bi-printer me-1"></i> Cetak
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <!-- TOMBOL WHATSAPP DIRECT NATIVE (ANTI-STUCK) -->
+                            <a id="btnLinkWA" href="#" target="_blank" rel="noopener" class="btn btn-success w-100 fw-bold shadow-sm rounded-pill d-flex align-items-center justify-content-center text-decoration-none">
+                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                            </a>
+                        </div>
                     </div>
-                    <button class="btn btn-primary w-100 fw-bold p-2 rounded-pill" style="font-size: 11px;" onclick="aksiOrderBaru()">Order Baru</button>
+                    
+                    <button type="button" class="btn btn-primary w-100 fw-bold p-2 rounded-pill" style="font-size: 11px;" onclick="aksiOrderBaru()">Order Baru</button>
                 </div>
             </div>
         </div>
@@ -646,7 +658,7 @@
             document.getElementById('headerStoreAddress').innerText = s.address || 'Kota Anda'; 
         }
 
-        // ------------------ TRANSAKSI & CETAK/WA FIX ------------------
+        // ------------------ TRANSAKSI & HASIL SUKSES BEBAS STUCK ------------------
         function updateCountReport() { document.getElementById('countReportBtn').innerText = APP_DATA.transactions.length; }
         function generateNoNota() { 
             let val = 'INV-' + (Math.floor(Math.random() * 900000) + 100000);
@@ -736,32 +748,46 @@
         function tampilkanModalSukses(tx) { 
             LAST_TX = tx;
             document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); 
-            try{ bsModalNota.show(); }catch(e){} 
+            
+            // GENERATE WHATSAPP LINK DENGAN PENUH PRESISI (NATIVE LINK LINKING)
+            let itemLines = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('\n');
+            let pesanTeks = `${APP_DATA.settings.storeName}\n${APP_DATA.settings.address}\n----------------------------------\nNo Nota: ${tx.nota}\nTgl: ${tx.waktu}\n----------------------------------\n${itemLines}\n----------------------------------\nTotal: Rp ${Number(tx.total).toLocaleString('id-ID')}\nBayar: ${tx.metode}\n\n${APP_DATA.settings.footerMsg}`;
+            
+            let waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanTeks)}`;
+            let btnWA = document.getElementById('btnLinkWA');
+            if (btnWA) btnWA.href = waUrl;
+
+            try { 
+                bsModalNota.show(); 
+            } catch(e) {
+                document.getElementById('modalNota').style.display = 'block';
+            } 
         }
 
-        // PERBAIKAN FUNGSI CETAK
         function cetakNotaSekarang() {
             if(!LAST_TX) return alert("Data transaksi tidak ditemukan!");
             let printArea = document.getElementById('printArea');
             printArea.innerHTML = getStrukHTML(LAST_TX); 
             setTimeout(() => {
                 window.print();
-            }, 150);
+            }, 100);
         }
 
-        // PERBAIKAN FUNGSI SHARE WHATSAPP
-        function kirimWASekarang() {
-            if(!LAST_TX) return alert("Data transaksi tidak ditemukan!");
-            let itemLines = LAST_TX.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('\n'); 
-            
-            let pesanTeks = `${APP_DATA.settings.storeName}\n${APP_DATA.settings.address}\n----------------------------------\nNo Nota: ${LAST_TX.nota}\nTgl: ${LAST_TX.waktu}\n----------------------------------\n${itemLines}\n----------------------------------\nTotal: Rp ${Number(LAST_TX.total).toLocaleString('id-ID')}\nBayar: ${LAST_TX.metode}\n\n${APP_DATA.settings.footerMsg}`;
-            
-            let waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanTeks)}`;
-            window.location.href = waUrl;
-        }
-
+        // AKSI ORDER BARU (PEMBERSIHAN PERMANEN DARI LOGOUT / OVERLAY LOCK)
         function aksiOrderBaru() { 
-            try{ bsModalNota.hide(); }catch(e){} 
+            try { 
+                if(bsModalNota) bsModalNota.hide(); 
+            } catch(e){} 
+            
+            // Bersihkan manual elemen backdrop agar HP tidak pernah stuck
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            let mEl = document.getElementById('modalNota');
+            if(mEl) mEl.style.display = 'none';
+
             document.getElementById('itemsContainer').innerHTML = ''; 
             tambahBaris(); 
             document.getElementById('uangBayar').value = ''; 
@@ -804,9 +830,15 @@
             document.getElementById('todayTxCount').innerText = todayTxCount;
             document.getElementById('todayOmzet').innerText = "Rp " + todayOmzet.toLocaleString('id-ID');
             document.getElementById('todayLaba').innerText = "Rp " + todayLaba.toLocaleString('id-ID');
+
+            // Set link WA rekap
+            let btnHariIni = document.getElementById('btnShareWAHariIni');
+            let btnSemua = document.getElementById('btnShareWASemua');
+            if(btnHariIni) btnHariIni.href = getWaRekapUrl('hari_ini');
+            if(btnSemua) btnSemua.href = getWaRekapUrl('semua');
         }
 
-        function shareLaporanWA(tipe) {
+        function getWaRekapUrl(tipe) {
             let todayStr = getTodayDateString();
             let totalTx = 0, totalOmzet = 0, totalLaba = 0;
             let judul = "";
@@ -830,7 +862,7 @@
             }
 
             let pesan = `*${APP_DATA.settings.storeName}*\n${judul}\n----------------------------------\n- Jumlah Transaksi: ${totalTx} tx\n- Total Omzet: Rp ${totalOmzet.toLocaleString('id-ID')}\n- Laba Bersih: Rp ${totalLaba.toLocaleString('id-ID')}\n----------------------------------\n_Laporan ini dibuat otomatis dari Kasir UMKM_`;
-            window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`;
+            return `https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`;
         }
 
         function konfirmasiResetLaporan() { if(confirm("Hapus riwayat transaksi lokal?")) { APP_DATA.transactions = []; APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); } }
