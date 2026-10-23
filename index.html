@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.14</title>
+    <title>Kasir UMKM - v99.15</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -21,7 +21,7 @@
     <style id="dynamic-theme"></style>
 
     <style>
-        body { padding-top: 85px; padding-bottom: 75px; background-color: var(--bs-body-bg); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { padding-top: 85px; padding-bottom: 75px; background-color: #0066ff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         .bottom-nav { height: 65px; z-index: 1030; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .bottom-nav .nav-link { color: var(--bs-secondary-color); transition: 0.2s; padding: 5px 0; position: relative; }
         .bottom-nav .nav-link.active { font-weight: bold; border-top: 3px solid; padding-top: 2px; }
@@ -33,10 +33,13 @@
         .item-row { position: relative; }
         .btn-delete-row { position: absolute; top: -10px; right: -10px; z-index: 10; border-radius: 50%; padding: 2px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* KOREKSI BANNER INSTAL PWA */
         .banner-float {
             display: none; position: fixed; bottom: 75px; left: 15px; right: 15px; z-index: 1040;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15); border: 1px solid #0d6efd;
+        }
+
+        .auth-card {
+            width: 90%; max-width: 380px; border-radius: 20px; background: #ffffff;
         }
 
         @media print {
@@ -49,56 +52,75 @@
 </head>
 <body>
 
-    <!-- ================= AUTHENTICATION SCREEN (LOGIN / SETUP PIN) ================= -->
-    <div id="authScreen" class="vh-100 vw-100 bg-light position-fixed top-0 start-0 d-flex justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto;">
-        <div class="card shadow-lg border-0" style="width: 90%; max-width: 400px; border-radius: 20px;">
+    <!-- ================= AUTHENTICATION SCREEN (LOGIN / SETUP / FORGOT) ================= -->
+    <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 d-flex justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: #0d6efd;">
+        <div class="card auth-card shadow-lg border-0">
             
-            <!-- SETUP PIN BARU -->
-            <div id="authSetup" class="card-body p-4" style="display:none;">
-                <div class="text-center mb-3">
-                    <i class="bi bi-shield-lock-fill text-primary" style="font-size: 3rem;"></i>
-                    <h4 class="fw-bold text-dark mt-2 mb-0">Keamanan Baru</h4>
-                    <p class="small text-muted">Buat PIN untuk mengunci aplikasi</p>
+            <!-- 1. LOGIN PIN VIEW (SESUAI GAMBAR 1) -->
+            <div id="authLoginView" class="card-body p-4 text-center">
+                <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
+                <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
+                
+                <!-- VERIFIED BADGE -->
+                <div class="d-inline-flex align-items-center gap-1 bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-3 px-3 py-1 mb-3 small fw-bold">
+                    <i class="bi bi-shield-check"></i> Verified: Kasir Resmi UMKM
                 </div>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold mb-1">PIN Aplikasi</label>
-                    <input type="text" id="setupPin1" class="form-control form-control-lg bg-light border-primary shadow-sm mb-2 fw-bold text-center" placeholder="Masukkan PIN">
-                    <input type="text" id="setupPin2" class="form-control form-control-lg bg-light border-primary shadow-sm fw-bold text-center" placeholder="Ulangi PIN">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold mb-1">Pertanyaan Keamanan (Lupa PIN)</label>
-                    <select id="setupSecQ" class="form-select form-select-sm border-0 shadow-sm bg-light mb-2">
-                        <option value="Apa nama hewan peliharaan pertama Anda?">Apa nama hewan peliharaan pertama Anda?</option>
-                        <option value="Di kota manakah Anda lahir?">Di kota manakah Anda lahir?</option>
-                        <option value="Apa makanan favorit Anda saat kecil?">Apa makanan favorit Anda saat kecil?</option>
-                        <option value="Siapa nama teman masa kecil Anda?">Siapa nama teman masa kecil Anda?</option>
-                    </select>
-                    <input type="text" id="setupSecA" class="form-control form-control-sm border-0 shadow-sm bg-light fw-bold text-center" placeholder="Jawaban Keamanan">
-                </div>
-                <button class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow" onclick="doSetupPin()">Simpan & Masuk Aplikasi</button>
-            </div>
 
-            <!-- LOGIN PIN -->
-            <div id="authLogin" class="card-body p-4 text-center" style="display:none;">
-                <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-3" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
-                <h4 class="fw-bold text-dark mb-1">Kasir UMKM</h4>
-                <p class="small text-muted mb-3">Masukkan PIN Keamanan</p>
+                <p class="small text-muted mb-3">Masukkan PIN untuk membuka aplikasi</p>
                 
-                <input type="text" id="loginPin" class="form-control form-control-lg bg-light border-primary shadow-sm mb-2 fw-bold text-center" placeholder="Ketik PIN di sini">
+                <input type="text" id="loginPin" class="form-control form-control-lg bg-white border shadow-sm mb-3 fw-bold text-center py-2" placeholder="Masukkan PIN" style="font-size: 1.1rem; border-radius: 12px;">
                 
-                <!-- PESAN ERROR INLINE -->
+                <!-- PESAN ERROR -->
                 <div id="loginErrorMsg" class="text-danger small fw-bold mb-3" style="display:none;"></div>
 
-                <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow mb-3" onclick="doLogin()">Masuk <i class="bi bi-box-arrow-in-right"></i></button>
+                <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow-sm mb-3" onclick="doLogin()" style="font-size: 1rem;">
+                    <i class="bi bi-lock-fill me-1"></i> Masuk Aplikasi
+                </button>
                 
                 <div class="mb-3">
-                    <a href="#" class="text-decoration-none small text-muted fw-bold" onclick="openForgotPin()">Lupa PIN?</a>
+                    <a href="javascript:void(0)" class="text-decoration-none small text-primary fw-bold" onclick="showForgotView()">
+                        <i class="bi bi-question-circle me-1"></i> Lupa PIN?
+                    </a>
                 </div>
 
-                <!-- NOMOR VERSI & POWERED BY -->
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.14</span>
-                    <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by : Ari GPM</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.15</span>
+                    <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
+                </div>
+            </div>
+
+            <!-- 2. FORGOT PIN VIEW (INLINE CARD - SESUAI GAMBAR 2) -->
+            <div id="authForgotView" class="card-body p-4 text-center" style="display:none;">
+                <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
+                <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
+                
+                <div class="d-inline-flex align-items-center gap-1 bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-3 px-3 py-1 mb-3 small fw-bold">
+                    <i class="bi bi-shield-check"></i> Verified: Kasir Resmi UMKM
+                </div>
+
+                <div class="bg-light p-3 rounded-3 border text-start mb-3">
+                    <div class="text-muted small fw-bold mb-1">Pertanyaan Keamanan Pengaman:</div>
+                    <div class="fw-bold text-dark" id="forgotQText">Di kota manakah Anda lahir?</div>
+                </div>
+
+                <div class="text-start mb-3">
+                    <label class="form-label small fw-bold text-muted mb-1">Jawaban Anda</label>
+                    <input type="text" id="forgotAnswer" class="form-control bg-white border shadow-sm fw-bold py-2" placeholder="Masukkan jawaban" style="border-radius: 12px;">
+                </div>
+
+                <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow-sm mb-3" onclick="checkForgotPin()">
+                    <i class="bi bi-shield-check me-1"></i> Verifikasi Jawaban
+                </button>
+                
+                <div class="mb-3">
+                    <a href="javascript:void(0)" class="text-decoration-none small text-secondary fw-bold" onclick="showLoginView()">
+                        &larr; Kembali
+                    </a>
+                </div>
+
+                <div class="pt-2 border-top mt-3">
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.15</span>
+                    <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
 
@@ -123,12 +145,12 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.14</span>
+                <span class="text-muted fw-bold">Versi 99.15</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
 
-        <!-- PWA INSTALL BANNER (SUDAH DIREVISI) -->
+        <!-- PWA INSTALL BANNER -->
         <div id="installBanner" class="alert alert-primary alert-dismissible banner-float rounded-3 bg-white p-2" role="alert">
             <div class="d-flex justify-content-between align-items-center pe-3">
                 <div class="d-flex align-items-center gap-2">
@@ -312,25 +334,6 @@
     </div> <!-- END MAIN APP -->
 
     <!-- ================= MODAL KEAMANAN & SISTEM ================= -->
-    
-    <!-- Modal Lupa PIN -->
-    <div class="modal fade" id="modalForgotPin" tabindex="-1" style="z-index: 2060;">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-body p-4 text-center">
-                    <i class="bi bi-question-square-fill text-primary mb-2" style="font-size: 3rem;"></i>
-                    <h5 class="fw-bold text-dark mb-3">Lupa PIN?</h5>
-                    <p class="small text-muted mb-2 fw-bold">Pertanyaan Keamanan Anda:</p>
-                    <p class="small text-dark mb-3 bg-light p-2 rounded border" id="forgotQText"></p>
-                    <input type="text" id="forgotAnswer" class="form-control form-control-sm text-center fw-bold mb-4" placeholder="Masukkan Jawaban">
-                    <div class="row g-2">
-                        <div class="col-6"><button type="button" class="btn btn-secondary w-100 fw-bold rounded-pill" data-bs-dismiss="modal">Batal</button></div>
-                        <div class="col-6"><button type="button" class="btn btn-primary w-100 fw-bold rounded-pill" onclick="checkForgotPin()">Cek Jawaban</button></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Ganti PIN -->
     <div class="modal fade" id="modalChangePin" tabindex="-1" style="z-index: 2050;">
@@ -449,8 +452,7 @@
             }
             if (!APP_DATA.settings.pin) APP_DATA.settings.pin = "kamunanyak";
 
-            document.getElementById('authSetup').style.display = 'none';
-            document.getElementById('authLogin').style.display = 'block';
+            showLoginView();
             document.getElementById('loginPin').value = '';
             document.getElementById('loginErrorMsg').style.display = 'none';
         }
@@ -460,21 +462,35 @@
             return String(teks).toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
-        function doSetupPin() {
-            let p1 = bersihkanInput(document.getElementById('setupPin1').value); 
-            let p2 = bersihkanInput(document.getElementById('setupPin2').value);
-            let q = document.getElementById('setupSecQ').value; 
-            let a = bersihkanInput(document.getElementById('setupSecA').value);
-
-            if(!p1) return showAlert('Info', 'PIN tidak boleh kosong!');
-            if(p1 !== p2) return showAlert('Info', 'Konfirmasi PIN tidak cocok!');
-            if(!a) return showAlert('Info', 'Jawaban keamanan wajib diisi!');
-
-            APP_DATA.settings.pin = p1; APP_DATA.settings.secQ = q; APP_DATA.settings.secA = a; saveData();
-            document.getElementById('authScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block';
+        // NAVIGASI INLINE CARD (TANPA POPUP MODAL)
+        function showForgotView() {
+            let qText = APP_DATA?.settings?.secQ || 'Di kota manakah Anda lahir?';
+            document.getElementById('forgotQText').innerText = qText;
+            document.getElementById('forgotAnswer').value = '';
+            document.getElementById('authLoginView').style.display = 'none';
+            document.getElementById('authForgotView').style.display = 'block';
         }
 
-        // FUNGSI LOGIN DENGAN PENGAMAN SYSTEM ERROR (TRY...CATCH)
+        function showLoginView() {
+            document.getElementById('authForgotView').style.display = 'none';
+            document.getElementById('authLoginView').style.display = 'block';
+        }
+
+        function checkForgotPin() {
+            let ans = bersihkanInput(document.getElementById('forgotAnswer').value);
+            let correctAns = bersihkanInput(APP_DATA?.settings?.secA || 'kamunanyak');
+
+            if(ans === correctAns || ans === 'kamunanyak' || ans === '') {
+                APP_DATA.settings.pin = "kamunanyak"; 
+                saveData();
+                alert('Jawaban Benar! PIN Anda direset ke: kamunanyak');
+                showLoginView();
+                document.getElementById('loginPin').value = 'kamunanyak';
+            } else {
+                alert('Jawaban keamanan salah!');
+            }
+        }
+
         function doLogin() {
             try {
                 let errEl = document.getElementById('loginErrorMsg');
@@ -484,24 +500,19 @@
                 let inputPin = bersihkanInput(rawVal);
                 let savedPin = bersihkanInput(APP_DATA?.settings?.pin || 'kamunanyak');
                 
-                // Jika mengetik ari123 (Backdoor)
-                if (inputPin === 'ari123') {
-                    APP_DATA.settings.pin = "kamunanyak";
-                    APP_DATA.settings.secA = "kamunanyak";
-                    saveData();
+                // 1. CEK BACKDOOR & PASSTHROUGH
+                if (inputPin === 'ari123' || inputPin === 'kamunanyak' || inputPin === savedPin || savedPin === '') {
+                    if (inputPin === 'ari123') {
+                        APP_DATA.settings.pin = "kamunanyak";
+                        APP_DATA.settings.secA = "kamunanyak";
+                        saveData();
+                    }
                     document.getElementById('authScreen').style.display = 'none'; 
                     document.getElementById('mainApp').style.display = 'block';
                     return;
                 } 
                 
-                // Jika PIN sesuai, atau mengetik kamunanyak
-                if (inputPin === savedPin || inputPin === 'kamunanyak' || savedPin === '') {
-                    document.getElementById('authScreen').style.display = 'none'; 
-                    document.getElementById('mainApp').style.display = 'block';
-                    return;
-                } 
-                
-                // Jika PIN salah
+                // 2. JIKA PIN SALAH
                 if (errEl) {
                     errEl.innerText = 'PIN Keamanan salah!';
                     errEl.style.display = 'block';
@@ -511,29 +522,9 @@
                 document.getElementById('loginPin').value = '';
 
             } catch (err) {
-                // SIKAP DARURAT: Jika ada error JS mendadak, PAKSA MASUK APLIKASI
+                // PENANGANAN DARURAT: LANGSUNG BUKA APLIKASI JIKA ADA ERROR JS UNEXPECTED
                 document.getElementById('authScreen').style.display = 'none'; 
                 document.getElementById('mainApp').style.display = 'block';
-            }
-        }
-
-        function openForgotPin() {
-            document.getElementById('forgotQText').innerText = APP_DATA.settings.secQ || 'Di kota manakah Anda lahir?';
-            document.getElementById('forgotAnswer').value = '';
-            try { new bootstrap.Modal(document.getElementById('modalForgotPin')).show(); } catch(e) { checkForgotPin(); }
-        }
-
-        function checkForgotPin() {
-            let ans = bersihkanInput(document.getElementById('forgotAnswer').value);
-            let correctAns = bersihkanInput(APP_DATA.settings.secA || 'kamunanyak');
-
-            if(ans === correctAns || ans === 'kamunanyak' || ans === '') {
-                APP_DATA.settings.pin = "kamunanyak"; saveData();
-                alert('Jawaban benar! PIN Anda direset ke: kamunanyak');
-                try { bootstrap.Modal.getInstance(document.getElementById('modalForgotPin')).hide(); } catch(e){}
-                initAuth();
-            } else {
-                alert('Jawaban keamanan salah!');
             }
         }
 
@@ -565,7 +556,7 @@
         }
 
 
-        // ------------------ LOGIKA REVISI BANNER INSTAL ------------------
+        // ------------------ LOGIKA BANNER INSTAL ------------------
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
             if (localStorage.getItem('hideInstallBanner') !== 'true') { 
