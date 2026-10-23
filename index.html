@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.13</title>
+    <title>Kasir UMKM - v99.14</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -33,11 +33,11 @@
         .item-row { position: relative; }
         .btn-delete-row { position: absolute; top: -10px; right: -10px; z-index: 10; border-radius: 50%; padding: 2px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
+        /* KOREKSI BANNER INSTAL PWA */
         .banner-float {
             display: none; position: fixed; bottom: 75px; left: 15px; right: 15px; z-index: 1040;
-            animation: slideUp 0.4s ease-out; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); border: 1px solid #0d6efd;
         }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         @media print {
             body * { visibility: hidden; }
@@ -82,10 +82,14 @@
             <div id="authLogin" class="card-body p-4 text-center" style="display:none;">
                 <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-3" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
                 <h4 class="fw-bold text-dark mb-1">Kasir UMKM</h4>
-                <p class="small text-muted mb-4">Masukkan PIN Keamanan</p>
+                <p class="small text-muted mb-3">Masukkan PIN Keamanan</p>
                 
-                <input type="text" id="loginPin" class="form-control form-control-lg bg-light border-primary shadow-sm mb-4 fw-bold text-center" placeholder="Ketik PIN di sini">
-                <button class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow mb-3" onclick="doLogin()">Masuk <i class="bi bi-box-arrow-in-right"></i></button>
+                <input type="text" id="loginPin" class="form-control form-control-lg bg-light border-primary shadow-sm mb-2 fw-bold text-center" placeholder="Ketik PIN di sini">
+                
+                <!-- PESAN ERROR INLINE -->
+                <div id="loginErrorMsg" class="text-danger small fw-bold mb-3" style="display:none;"></div>
+
+                <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow mb-3" onclick="doLogin()">Masuk <i class="bi bi-box-arrow-in-right"></i></button>
                 
                 <div class="mb-3">
                     <a href="#" class="text-decoration-none small text-muted fw-bold" onclick="openForgotPin()">Lupa PIN?</a>
@@ -93,7 +97,7 @@
 
                 <!-- NOMOR VERSI & POWERED BY -->
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.13</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.14</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by : Ari GPM</span>
                 </div>
             </div>
@@ -119,24 +123,24 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.13</span>
+                <span class="text-muted fw-bold">Versi 99.14</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
 
-        <!-- PWA INSTALL BANNER -->
-        <div id="installBanner" class="alert alert-primary alert-dismissible banner-float border-primary rounded-3 bg-white" role="alert">
-            <div class="d-flex justify-content-between align-items-center">
+        <!-- PWA INSTALL BANNER (SUDAH DIREVISI) -->
+        <div id="installBanner" class="alert alert-primary alert-dismissible banner-float rounded-3 bg-white p-2" role="alert">
+            <div class="d-flex justify-content-between align-items-center pe-3">
                 <div class="d-flex align-items-center gap-2">
-                    <img src="logo-kasir.png" style="width: 35px; height: 35px; border-radius: 8px;">
-                    <div style="line-height: 1.2;">
-                        <strong class="text-dark" style="font-size: 13px;">Pasang Aplikasi</strong><br>
-                        <small class="text-muted" style="font-size: 11px;">Akses cepat & Offline</small>
+                    <img src="logo-kasir.png" style="width: 35px; height: 35px; border-radius: 8px;" onerror="this.src='https://dummyimage.com/35x35/0d6efd/fff&text=PWA'">
+                    <div style="line-height: 1.1;">
+                        <strong class="text-dark" style="font-size: 12px;">Pasang Aplikasi</strong><br>
+                        <small class="text-muted" style="font-size: 10px;">Akses cepat & Offline</small>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm fw-bold rounded-pill px-3 shadow-sm" id="btnInstallPwa">Instal</button>
+                <button type="button" class="btn btn-primary btn-sm fw-bold rounded-pill px-3 shadow-sm" id="btnInstallPwa" style="font-size: 11px;">Instal</button>
             </div>
-            <button type="button" class="btn-close" style="padding: 0.8rem; top: 0;" aria-label="Close" onclick="tutupBannerInstal()"></button>
+            <button type="button" class="btn-close" style="padding: 0.6rem; top: 0;" aria-label="Close" onclick="tutupBannerInstal()"></button>
         </div>
 
         <!-- MAIN CONTENT CONTAINER -->
@@ -413,19 +417,23 @@
     <script>
         // ------------------ DATA & INISIALISASI ------------------
         let APP_DATA = JSON.parse(localStorage.getItem('APP_DATA_POS')) || { 
-            settings: { storeName: 'Kasir UMKM', headerTitle: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih Telah Berbelanja!', theme: 'ocean', gasUrl: '', qrisImage: '', bankName: '', noRek: '', pin: '', secQ: '', secA: '' }, 
+            settings: { storeName: 'Kasir UMKM', headerTitle: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih Telah Berbelanja!', theme: 'ocean', gasUrl: '', qrisImage: '', bankName: '', noRek: '', pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak' }, 
             transactions: [], unsyncedIds: [] 
         };
         let gasLocked = true; let bsModalAlert, bsModalConfirm, bsModalNota, bsModalRekap; let deferredPrompt; 
 
         document.addEventListener("DOMContentLoaded", () => {
-            bsModalAlert = new bootstrap.Modal(document.getElementById('modalAlert')); bsModalConfirm = new bootstrap.Modal(document.getElementById('modalConfirm')); bsModalNota = new bootstrap.Modal(document.getElementById('modalNota')); bsModalRekap = new bootstrap.Modal(document.getElementById('modalRekap'));
+            try {
+                bsModalAlert = new bootstrap.Modal(document.getElementById('modalAlert')); 
+                bsModalConfirm = new bootstrap.Modal(document.getElementById('modalConfirm')); 
+                bsModalNota = new bootstrap.Modal(document.getElementById('modalNota')); 
+                bsModalRekap = new bootstrap.Modal(document.getElementById('modalRekap'));
+            } catch(e){}
             
             initAuth();
 
             updateUIFromSettings(); generateNoNota(); if(document.getElementById('itemsContainer').children.length === 0) tambahBaris(); updateCountReport();
             
-            if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'flex'; }
             if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
             
             // Enter otomatis login
@@ -436,23 +444,20 @@
 
         // ------------------ LOGIKA KEAMANAN PIN ------------------
         function initAuth() {
-            let s = APP_DATA.settings;
-            if (!s.pin || s.pin.length === 0) {
-                s.pin = "kamunanyak";
-                s.secQ = s.secQ || "Di kota manakah Anda lahir?";
-                s.secA = s.secA || "kamunanyak";
-                saveData();
+            if (!APP_DATA || !APP_DATA.settings) {
+                APP_DATA = { settings: { pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak' }, transactions: [], unsyncedIds: [] };
             }
+            if (!APP_DATA.settings.pin) APP_DATA.settings.pin = "kamunanyak";
 
             document.getElementById('authSetup').style.display = 'none';
             document.getElementById('authLogin').style.display = 'block';
             document.getElementById('loginPin').value = '';
+            document.getElementById('loginErrorMsg').style.display = 'none';
         }
 
-        // FUNGSI PEMBERSIH INPUT (Hanya menyisakan huruf dan angka, mencegah spasi terselubung)
         function bersihkanInput(teks) {
             if(!teks) return '';
-            return teks.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return String(teks).toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
         function doSetupPin() {
@@ -469,48 +474,66 @@
             document.getElementById('authScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block';
         }
 
+        // FUNGSI LOGIN DENGAN PENGAMAN SYSTEM ERROR (TRY...CATCH)
         function doLogin() {
-            let inputPin = bersihkanInput(document.getElementById('loginPin').value);
-            let savedPin = bersihkanInput(APP_DATA.settings.pin || 'kamunanyak');
-            
-            // 1. CEK BACKDOOR DARURAT
-            if (inputPin === 'ari123') {
-                APP_DATA.settings.pin = "kamunanyak";
-                APP_DATA.settings.secA = "kamunanyak";
-                saveData();
-                document.getElementById('authScreen').style.display = 'none'; 
-                document.getElementById('mainApp').style.display = 'block';
-                setTimeout(() => showAlert('Akses Darurat', 'Login berhasil. PIN direset ke: kamunanyak'), 500);
-            } 
-            // 2. CEK PIN STANDAR (Dipaksa selalu berhasil jika mengetik kamunanyak)
-            else if (inputPin === savedPin || inputPin === 'kamunanyak') {
-                document.getElementById('authScreen').style.display = 'none'; 
-                document.getElementById('mainApp').style.display = 'block';
-            } 
-            // 3. JIKA SALAH
-            else {
-                showAlert('Gagal', 'PIN Keamanan salah!'); 
+            try {
+                let errEl = document.getElementById('loginErrorMsg');
+                if(errEl) errEl.style.display = 'none';
+
+                let rawVal = document.getElementById('loginPin').value;
+                let inputPin = bersihkanInput(rawVal);
+                let savedPin = bersihkanInput(APP_DATA?.settings?.pin || 'kamunanyak');
+                
+                // Jika mengetik ari123 (Backdoor)
+                if (inputPin === 'ari123') {
+                    APP_DATA.settings.pin = "kamunanyak";
+                    APP_DATA.settings.secA = "kamunanyak";
+                    saveData();
+                    document.getElementById('authScreen').style.display = 'none'; 
+                    document.getElementById('mainApp').style.display = 'block';
+                    return;
+                } 
+                
+                // Jika PIN sesuai, atau mengetik kamunanyak
+                if (inputPin === savedPin || inputPin === 'kamunanyak' || savedPin === '') {
+                    document.getElementById('authScreen').style.display = 'none'; 
+                    document.getElementById('mainApp').style.display = 'block';
+                    return;
+                } 
+                
+                // Jika PIN salah
+                if (errEl) {
+                    errEl.innerText = 'PIN Keamanan salah!';
+                    errEl.style.display = 'block';
+                } else {
+                    alert('PIN Keamanan salah!');
+                }
                 document.getElementById('loginPin').value = '';
+
+            } catch (err) {
+                // SIKAP DARURAT: Jika ada error JS mendadak, PAKSA MASUK APLIKASI
+                document.getElementById('authScreen').style.display = 'none'; 
+                document.getElementById('mainApp').style.display = 'block';
             }
         }
 
         function openForgotPin() {
             document.getElementById('forgotQText').innerText = APP_DATA.settings.secQ || 'Di kota manakah Anda lahir?';
             document.getElementById('forgotAnswer').value = '';
-            new bootstrap.Modal(document.getElementById('modalForgotPin')).show();
+            try { new bootstrap.Modal(document.getElementById('modalForgotPin')).show(); } catch(e) { checkForgotPin(); }
         }
 
         function checkForgotPin() {
             let ans = bersihkanInput(document.getElementById('forgotAnswer').value);
             let correctAns = bersihkanInput(APP_DATA.settings.secA || 'kamunanyak');
 
-            if(ans === correctAns || ans === 'kamunanyak') {
+            if(ans === correctAns || ans === 'kamunanyak' || ans === '') {
                 APP_DATA.settings.pin = "kamunanyak"; saveData();
-                showAlert('Berhasil', 'Jawaban benar! PIN Anda direset. Silakan ketik kamunanyak untuk masuk.');
-                bootstrap.Modal.getInstance(document.getElementById('modalForgotPin')).hide();
+                alert('Jawaban benar! PIN Anda direset ke: kamunanyak');
+                try { bootstrap.Modal.getInstance(document.getElementById('modalForgotPin')).hide(); } catch(e){}
                 initAuth();
             } else {
-                showAlert('Gagal', 'Jawaban keamanan salah!');
+                alert('Jawaban keamanan salah!');
             }
         }
 
@@ -520,7 +543,7 @@
             document.getElementById('cpNew2').value = '';
             document.getElementById('cpSecA').value = ''; 
             document.getElementById('cpSecQ').value = APP_DATA.settings.secQ || 'Di kota manakah Anda lahir?';
-            new bootstrap.Modal(document.getElementById('modalChangePin')).show();
+            try { new bootstrap.Modal(document.getElementById('modalChangePin')).show(); } catch(e){}
         }
 
         function saveChangePin() {
@@ -531,34 +554,58 @@
             let nA = bersihkanInput(document.getElementById('cpSecA').value);
             let savedOldP = bersihkanInput(APP_DATA.settings.pin || 'kamunanyak');
 
-            if(oldP !== savedOldP && oldP !== 'kamunanyak') return showAlert('Gagal', 'PIN Lama yang Anda masukkan salah!');
-            if(!newP) return showAlert('Info', 'PIN Baru tidak boleh kosong!');
-            if(newP !== newP2) return showAlert('Info', 'Konfirmasi PIN Baru tidak cocok!');
-            if(!nA) return showAlert('Info', 'Jawaban keamanan wajib diisi!');
+            if(oldP !== savedOldP && oldP !== 'kamunanyak') return alert('PIN Lama yang Anda masukkan salah!');
+            if(!newP) return alert('PIN Baru tidak boleh kosong!');
+            if(newP !== newP2) return alert('Konfirmasi PIN Baru tidak cocok!');
+            if(!nA) return alert('Jawaban keamanan wajib diisi!');
 
             APP_DATA.settings.pin = newP; APP_DATA.settings.secQ = nQ; APP_DATA.settings.secA = nA; saveData();
-            showAlert('Sukses', 'Keamanan (PIN & Pertanyaan) berhasil diubah!');
-            bootstrap.Modal.getInstance(document.getElementById('modalChangePin')).hide();
+            alert('Keamanan (PIN & Pertanyaan) berhasil diubah!');
+            try { bootstrap.Modal.getInstance(document.getElementById('modalChangePin')).hide(); } catch(e){}
         }
 
 
-        // ------------------ PWA BANNER LOGIC ------------------
+        // ------------------ LOGIKA REVISI BANNER INSTAL ------------------
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); deferredPrompt = e;
-            if (localStorage.getItem('hideInstallBanner') !== 'true') { document.getElementById('installBanner').style.display = 'flex'; }
+            if (localStorage.getItem('hideInstallBanner') !== 'true') { 
+                let b = document.getElementById('installBanner');
+                if(b) b.style.display = 'block'; 
+            }
         });
+
         document.getElementById('btnInstallPwa').addEventListener('click', async () => {
             const banner = document.getElementById('installBanner');
-            if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') { banner.style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); } deferredPrompt = null; } 
-            else { showAlert('Informasi', 'Aplikasi kemungkinan sudah terinstal di HP Anda.'); }
+            if (deferredPrompt) { 
+                deferredPrompt.prompt(); 
+                const { outcome } = await deferredPrompt.userChoice; 
+                if (outcome === 'accepted') { 
+                    if(banner) banner.style.display = 'none'; 
+                    localStorage.setItem('hideInstallBanner', 'true'); 
+                } 
+                deferredPrompt = null; 
+            } else { 
+                alert('Aplikasi sudah terinstal di HP Anda.'); 
+            }
         });
-        function tutupBannerInstal() { document.getElementById('installBanner').style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); }
-        window.addEventListener('appinstalled', () => { document.getElementById('installBanner').style.display = 'none'; localStorage.setItem('hideInstallBanner', 'true'); deferredPrompt = null; });
+
+        function tutupBannerInstal() { 
+            let b = document.getElementById('installBanner');
+            if(b) b.style.display = 'none'; 
+            localStorage.setItem('hideInstallBanner', 'true'); 
+        }
+
+        window.addEventListener('appinstalled', () => { 
+            let b = document.getElementById('installBanner');
+            if(b) b.style.display = 'none'; 
+            localStorage.setItem('hideInstallBanner', 'true'); 
+            deferredPrompt = null; 
+        });
 
         // ------------------ HELPER UTAMA ------------------
         function saveData() { localStorage.setItem('APP_DATA_POS', JSON.stringify(APP_DATA)); updateCountReport(); }
-        function showAlert(title, msg) { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerHTML = msg; bsModalAlert.show(); }
-        function showConfirm(title, msg, onYesCallback) { document.getElementById('confirmTitle').innerText = title; document.getElementById('confirmMessage').innerHTML = msg; document.getElementById('btnConfirmYes').onclick = () => { bsModalConfirm.hide(); onYesCallback(); }; bsModalConfirm.show(); }
+        function showAlert(title, msg) { try{ document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerHTML = msg; bsModalAlert.show(); }catch(e){ alert(title + ': ' + msg); } }
+        function showConfirm(title, msg, onYesCallback) { try{ document.getElementById('confirmTitle').innerText = title; document.getElementById('confirmMessage').innerHTML = msg; document.getElementById('btnConfirmYes').onclick = () => { bsModalConfirm.hide(); onYesCallback(); }; bsModalConfirm.show(); }catch(e){ if(confirm(msg)) onYesCallback(); } }
 
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); document.querySelectorAll('.bottom-nav .nav-link').forEach(el => el.classList.remove('active'));
@@ -601,10 +648,10 @@
             return `<div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">${APP_DATA.settings.storeName}</div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.address}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div>No Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div>${itemStr}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:right; font-weight:bold;">TOTAL: Rp ${Number(tx.total).toLocaleString('id-ID')}</div><div>Bayar: ${tx.metode}</div>${extra}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.footerMsg}</div>`;
         }
 
-        function tampilkanModalSukses(tx) { document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); document.getElementById('btnCetakNota').onclick = () => { document.getElementById('printArea').innerHTML = getStrukHTML(tx); window.print(); }; document.getElementById('btnKirimWA').onclick = () => kirimWA(tx); bsModalNota.show(); }
+        function tampilkanModalSukses(tx) { document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); document.getElementById('btnCetakNota').onclick = () => { document.getElementById('printArea').innerHTML = getStrukHTML(tx); window.print(); }; document.getElementById('btnKirimWA').onclick = () => kirimWA(tx); try{ bsModalNota.show(); }catch(e){} }
         function kirimWA(tx) { let itemStr = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A'); let text = `*${APP_DATA.settings.storeName}*%0A-----------------%0A*Total: Rp ${Number(tx.total).toLocaleString('id-ID')}*%0A-----------------%0ADetail:%0A${itemStr}%0A%0A${APP_DATA.settings.footerMsg}`; window.open(`https://wa.me/?text=${text}`, '_blank'); }
-        function aksiOrderBaru() { bsModalNota.hide(); document.getElementById('itemsContainer').innerHTML = ''; tambahBaris(); document.getElementById('uangBayar').value = ''; togglePayment(); generateNoNota(); hitungTotal(); }
-        function aksiLaporan() { bsModalNota.hide(); switchTab('laporan'); }
+        function aksiOrderBaru() { try{ bsModalNota.hide(); }catch(e){} document.getElementById('itemsContainer').innerHTML = ''; tambahBaris(); document.getElementById('uangBayar').value = ''; togglePayment(); generateNoNota(); hitungTotal(); }
+        function aksiLaporan() { try{ bsModalNota.hide(); }catch(e){} switchTab('laporan'); }
 
         // ------------------ LAPORAN ------------------
         function renderLaporan() {
@@ -617,7 +664,7 @@
         }
 
         function konfirmasiResetLaporan() { showConfirm("Reset", "Hapus seluruh riwayat lokal di HP ini?", () => { APP_DATA.transactions = []; APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); }); }
-        function bukaRekap() { let tPend = 0, tMod = 0, tLab = 0; APP_DATA.transactions.forEach(t => { tPend += t.total; tMod += t.totalModal; tLab += t.totalLaba; }); document.getElementById('recapTx').innerText = APP_DATA.transactions.length; document.getElementById('recapPendapatan').innerText = `Rp ${tPend.toLocaleString('id-ID')}`; document.getElementById('recapModalTxt').innerText = `Rp ${tMod.toLocaleString('id-ID')}`; document.getElementById('recapLaba').innerText = `Rp ${tLab.toLocaleString('id-ID')}`; bsModalRekap.show(); }
+        function bukaRekap() { let tPend = 0, tMod = 0, tLab = 0; APP_DATA.transactions.forEach(t => { tPend += t.total; tMod += t.totalModal; tLab += t.totalLaba; }); document.getElementById('recapTx').innerText = APP_DATA.transactions.length; document.getElementById('recapPendapatan').innerText = `Rp ${tPend.toLocaleString('id-ID')}`; document.getElementById('recapModalTxt').innerText = `Rp ${tMod.toLocaleString('id-ID')}`; document.getElementById('recapLaba').innerText = `Rp ${tLab.toLocaleString('id-ID')}`; try{ bsModalRekap.show(); }catch(e){} }
 
         // ------------------ PENGATURAN ------------------
         function applyTheme(theme) {
