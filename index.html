@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.20</title>
+    <title>Kasir UMKM - v99.22</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -50,6 +50,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 8px 10px;
+            scroll-behavior: smooth;
         }
 
         .card-sm {
@@ -92,6 +93,24 @@
             to { transform: translateY(0); }
         }
 
+        /* BOTTOM NAV SIMETRIS */
+        .bottom-nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: bold;
+            color: #6c757d;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .bottom-nav-item.active {
+            color: #0d6efd;
+        }
+
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; display: block !important; }
@@ -132,7 +151,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.20</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.22</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -167,7 +186,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.20</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.22</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -216,7 +235,7 @@
             </nav>
 
             <!-- KONTEN UTAMA RINGKAS (1 LAYAR) -->
-            <div class="scroll-content">
+            <div class="scroll-content" id="mainScrollArea">
                 
                 <!-- 1. VIEW KASIR -->
                 <div id="viewKasir" class="view-section active">
@@ -225,14 +244,19 @@
                         <span class="fw-bold text-muted" style="font-size: 11px;">
                             <i class="bi bi-receipt me-1"></i> Nota: <span id="noNotaDisplay" class="text-dark fw-bold">INV-000000</span>
                         </span>
-                        <button class="btn btn-primary btn-xs fw-bold rounded-pill" onclick="tambahBaris()">
-                            <i class="bi bi-plus-lg me-1"></i> Tambah Barang
-                        </button>
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size:10px;">POS Aktif</span>
                     </div>
                     
+                    <!-- DAFTAR PRODUK & TOMBOL TAMBAH BARANG DI BAWAHNYA (DI ATAS PEMBAYARAN) -->
                     <div class="card-sm bg-white">
                         <div class="fw-bold text-dark mb-1" style="font-size: 11px;"><i class="bi bi-box-seam me-1 text-primary"></i> Daftar Produk</div>
+                        
                         <div id="itemsContainer"></div>
+
+                        <!-- TOMBOL TAMBAH BARANG DIPINDAH DI ATAS PEMBAYARAN -->
+                        <button class="btn btn-outline-primary btn-sm w-100 fw-bold rounded-pill mt-2 py-1 shadow-sm" onclick="tambahBaris()" style="font-size: 11px;">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Tambah Barang
+                        </button>
                     </div>
 
                     <div class="card-sm bg-white">
@@ -275,10 +299,9 @@
 
                 </div>
 
-                <!-- 2. VIEW LAPORAN (DENGAN LABA RUGI HARIAN & SHARE WA) -->
-                <div id="viewLaporan" class="view-section">
+                <!-- 2. VIEW LAPORAN -->
+                <div id="viewLaporan" class="view-section" style="display:none;">
                     
-                    <!-- KARTU RINGKASAN HARIAN -->
                     <div class="card-sm bg-primary bg-opacity-10 border border-primary p-2 mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="fw-bold text-primary" style="font-size: 11px;"><i class="bi bi-calendar-check me-1"></i> Rekap Hari Ini</span>
@@ -325,10 +348,16 @@
                 </button>
             </div>
 
-            <!-- BOT NAV MINIMALIS -->
-            <div class="bg-white border-top d-flex justify-content-around py-1" style="font-size:10px;">
-                <a href="javascript:void(0)" class="text-decoration-none fw-bold text-primary px-3" onclick="switchTab('kasir')"><i class="bi bi-house-door-fill"></i> Kasir</a>
-                <a href="javascript:void(0)" class="text-decoration-none fw-bold text-secondary px-3" onclick="switchTab('laporan')"><i class="bi bi-clock-history"></i> Laporan (<span id="countReportBtn">0</span>)</a>
+            <!-- BOT NAV MINIMALIS & SIMETRIS (50% KASIR | 50% LAPORAN) -->
+            <div class="bg-white border-top d-flex justify-content-stretch text-center" style="font-size:11px;">
+                <a href="javascript:void(0)" id="navKasir" class="bottom-nav-item active" onclick="switchTab('kasir')">
+                    <i class="bi bi-house-door-fill fs-6 mb-1"></i>
+                    <span>Kasir</span>
+                </a>
+                <a href="javascript:void(0)" id="navLaporan" class="bottom-nav-item" onclick="switchTab('laporan')">
+                    <i class="bi bi-clock-history fs-6 mb-1"></i>
+                    <span>Laporan (<span id="countReportBtn">0</span>)</span>
+                </a>
             </div>
 
         </div>
@@ -361,6 +390,7 @@
                         <button class="btn btn-sm btn-outline-warning w-100 fw-bold rounded-pill" onclick="openChangePin()"><i class="bi bi-key-fill me-1"></i> Ganti PIN</button>
                     </div>
 
+                    <button class="btn btn-danger w-100 btn-sm fw-bold rounded-pill py-2 mb-2" onclick="logoutApp()"><i class="bi bi-power me-1"></i> Kunci / Keluar Aplikasi</button>
                     <button class="btn btn-primary w-100 fw-bold rounded-pill py-2" onclick="simpanQuickSettings()">Simpan Perubahan</button>
                 </div>
             </div>
@@ -395,8 +425,8 @@
                     <h5 class="fw-bold mt-1 text-dark">Sukses!</h5>
                     <div id="receiptPreview" class="text-start bg-light p-2 border rounded mt-2 mb-3 text-dark" style="font-family: monospace; font-size: 11px; line-height: 1.4;"></div>
                     <div class="row g-2 mb-2">
-                        <div class="col-6"><button class="btn btn-outline-primary w-100 fw-bold shadow-sm rounded-pill" id="btnCetakNota"><i class="bi bi-printer"></i> Cetak</button></div>
-                        <div class="col-6"><button class="btn btn-success w-100 fw-bold shadow-sm rounded-pill" id="btnKirimWA"><i class="bi bi-whatsapp"></i> WhatsApp</button></div>
+                        <div class="col-6"><button class="btn btn-outline-primary w-100 fw-bold shadow-sm rounded-pill" onclick="cetakNotaSekarang()"><i class="bi bi-printer"></i> Cetak</button></div>
+                        <div class="col-6"><button class="btn btn-success w-100 fw-bold shadow-sm rounded-pill" onclick="kirimWASekarang()"><i class="bi bi-whatsapp"></i> WhatsApp</button></div>
                     </div>
                     <button class="btn btn-primary w-100 fw-bold p-2 rounded-pill" style="font-size: 11px;" onclick="aksiOrderBaru()">Order Baru</button>
                 </div>
@@ -416,6 +446,7 @@
         };
         let bsModalQuickSettings, bsModalNota;
         let deferredPrompt;
+        let LAST_TX = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             try {
@@ -465,13 +496,19 @@
             if (banner) banner.style.display = 'none';
         }
 
-        // ------------------ LOGIKA KEAMANAN & PENGATURAN GERIGI ------------------
+        // ------------------ LOGIKA KEAMANAN & PERSISTENT SESSION ------------------
         function initAuth() {
             if (!APP_DATA || !APP_DATA.settings) {
                 APP_DATA = { settings: { pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak' }, transactions: [], unsyncedIds: [] };
             }
             if (!APP_DATA.settings.pin) APP_DATA.settings.pin = "kamunanyak";
-            showLoginView();
+
+            if (sessionStorage.getItem('IS_LOGGED_IN') === 'true') {
+                document.getElementById('authScreen').style.setProperty('display', 'none', 'important');
+                document.getElementById('mainApp').style.setProperty('display', 'block', 'important');
+            } else {
+                showLoginView();
+            }
         }
 
         function bersihkanInput(teks) {
@@ -542,6 +579,7 @@
                     APP_DATA.settings.secA = "kamunanyak";
                     saveData();
                 }
+                sessionStorage.setItem('IS_LOGGED_IN', 'true');
                 authScr.style.setProperty('display', 'none', 'important');
                 mainApp.style.setProperty('display', 'block', 'important');
                 return;
@@ -554,6 +592,12 @@
                 alert('PIN Keamanan salah!');
             }
             document.getElementById('loginPin').value = '';
+        }
+
+        function logoutApp() {
+            sessionStorage.removeItem('IS_LOGGED_IN');
+            bsModalQuickSettings.hide();
+            location.reload();
         }
 
         function openChangePin() {
@@ -576,10 +620,25 @@
 
         // ------------------ HELPER UTAMA ------------------
         function saveData() { localStorage.setItem('APP_DATA_POS', JSON.stringify(APP_DATA)); updateCountReport(); }
+        
         function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            if(tabId === 'kasir') { document.getElementById('viewKasir').classList.add('active'); } 
-            else if(tabId === 'laporan') { renderLaporan(); document.getElementById('viewLaporan').classList.add('active'); }
+            let viewKasir = document.getElementById('viewKasir');
+            let viewLaporan = document.getElementById('viewLaporan');
+            let navKasir = document.getElementById('navKasir');
+            let navLaporan = document.getElementById('navLaporan');
+
+            if(tabId === 'kasir') { 
+                viewKasir.style.display = 'block'; 
+                viewLaporan.style.display = 'none';
+                navKasir.classList.add('active');
+                navLaporan.classList.remove('active');
+            } else if(tabId === 'laporan') { 
+                renderLaporan(); 
+                viewKasir.style.display = 'none'; 
+                viewLaporan.style.display = 'block';
+                navLaporan.classList.add('active');
+                navKasir.classList.remove('active');
+            }
         }
 
         function updateUIFromSettings() {
@@ -588,7 +647,7 @@
             document.getElementById('headerStoreAddress').innerText = s.address || 'Kota Anda'; 
         }
 
-        // ------------------ TRANSAKSI & KASIR ------------------
+        // ------------------ TRANSAKSI & AUTO SCROLL DINAMIS ------------------
         function updateCountReport() { document.getElementById('countReportBtn').innerText = APP_DATA.transactions.length; }
         function generateNoNota() { 
             let val = 'INV-' + (Math.floor(Math.random() * 900000) + 100000);
@@ -596,7 +655,8 @@
         }
 
         function tambahBaris() {
-            let container = document.getElementById('itemsContainer'); let id = Date.now().toString() + Math.floor(Math.random()*100);
+            let container = document.getElementById('itemsContainer'); 
+            let id = Date.now().toString() + Math.floor(Math.random()*100);
             let rowHTML = `
             <div class="item-row" id="row-${id}">
                 <div class="d-flex align-items-center gap-1 mb-1">
@@ -604,20 +664,34 @@
                     <button class="btn btn-xs btn-light text-danger border-0 px-2" onclick="hapusBaris('${id}')"><i class="bi bi-trash-fill"></i></button>
                 </div>
                 <div class="row g-1 align-items-center">
-                    <div class="col-5">
+                    <div class="col-4">
                         <div class="input-group input-group-sm">
                             <button class="btn btn-outline-secondary px-1 py-0 fw-bold" type="button" onclick="ubahQty('${id}', -1)">-</button>
-                            <input type="number" class="form-control text-center fw-bold item-qty p-0" value="1" min="1" oninput="hitungTotal()" style="font-size:11px;">
+                            <input type="number" class="form-control text-center fw-bold item-qty p-0" value="1" min="1" oninput="hitungTotal()" style="font-size:10px;">
                             <button class="btn btn-outline-secondary px-1 py-0 fw-bold" type="button" onclick="ubahQty('${id}', 1)">+</button>
                         </div>
                     </div>
-                    <div class="col-7">
-                        <input type="number" class="form-control form-control-sm item-harga text-end fw-bold text-primary bg-white" placeholder="Harga (Rp)" oninput="hitungTotal()" style="font-size:11px;">
+                    <div class="col-4">
+                        <input type="number" class="form-control form-control-sm item-modal text-end text-muted bg-white" placeholder="HPP" oninput="hitungTotal()" style="font-size:10px;" title="Harga Modal (HPP)">
+                    </div>
+                    <div class="col-4">
+                        <input type="number" class="form-control form-control-sm item-harga text-end fw-bold text-primary bg-white" placeholder="Harga" oninput="hitungTotal()" style="font-size:10px;" title="Harga Jual">
                     </div>
                 </div>
-                <input type="hidden" class="item-modal" value="0">
             </div>`;
-            container.insertAdjacentHTML('beforeend', rowHTML); hitungTotal();
+            
+            container.insertAdjacentHTML('beforeend', rowHTML); 
+            hitungTotal();
+
+            // AUTO SCROLL MULUS & DINAMIS KE INPUT BARANG BARU
+            setTimeout(() => {
+                let newRow = document.getElementById(`row-${id}`);
+                if (newRow) {
+                    newRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    let inputNama = newRow.querySelector('.item-nama');
+                    if (inputNama) inputNama.focus();
+                }
+            }, 100);
         }
 
         function hapusBaris(id) { if(document.getElementById('itemsContainer').children.length > 1) { document.getElementById('row-' + id).remove(); hitungTotal(); } else { alert("Minimal 1 barang!"); } }
@@ -630,12 +704,27 @@
         function simpanTransaksi() {
             let payMethod = document.querySelector('input[name="paymentMethod"]:checked'); if(!payMethod) return alert("Pilih Metode Pembayaran!");
             let items = [], total = 0, totalModal = 0, isValid = true;
-            document.querySelectorAll('.item-row').forEach(row => { let nama = row.querySelector('.item-nama').value.trim(), qty = Number(row.querySelector('.item-qty').value) || 0, harga = Number(row.querySelector('.item-harga').value) || 0; if(!nama || harga <= 0) isValid = false; else { let sub = qty * harga; items.push({nama, qty, harga, subtotal: sub, modalSatuan: 0, subtotalModal: 0}); total += sub; } });
+            document.querySelectorAll('.item-row').forEach(row => { 
+                let nama = row.querySelector('.item-nama').value.trim();
+                let qty = Number(row.querySelector('.item-qty').value) || 0;
+                let harga = Number(row.querySelector('.item-harga').value) || 0;
+                let modal = Number(row.querySelector('.item-modal').value) || 0;
+
+                if(!nama || harga <= 0) isValid = false; 
+                else { 
+                    let sub = qty * harga; 
+                    let subMod = qty * modal;
+                    items.push({nama, qty, harga, subtotal: sub, modalSatuan: modal, subtotalModal: subMod}); 
+                    total += sub; 
+                    totalModal += subMod;
+                } 
+            });
+
             if(!isValid || items.length === 0) return alert("Lengkapi Nama dan Harga Produk!");
             let uangBayar = 0, kembalian = 0, bankName = '', noRek = '';
             if(payMethod.value === 'Tunai') { uangBayar = Number(document.getElementById('uangBayar').value) || 0; kembalian = uangBayar - total; if(kembalian < 0) return alert("Uang Tunai Kurang!"); } else if(payMethod.value === 'Transfer') { bankName = APP_DATA.settings.bankName || '-'; noRek = APP_DATA.settings.noRek || '-'; }
             let indexID = APP_DATA.transactions.length + 1; 
-            let newTx = { indexID, idSync: Date.now(), waktu: new Date().toLocaleString('id-ID'), nota: document.getElementById('noNotaDisplay').innerText, metode: payMethod.value, items, total, totalModal: 0, totalLaba: total, uangBayar, kembalian, bankName, noRek };
+            let newTx = { indexID, idSync: Date.now(), waktu: new Date().toLocaleString('id-ID'), nota: document.getElementById('noNotaDisplay').innerText, metode: payMethod.value, items, total, totalModal, totalLaba: total - totalModal, uangBayar, kembalian, bankName, noRek };
             APP_DATA.transactions.push(newTx); APP_DATA.unsyncedIds.push(newTx.idSync); saveData(); syncDataBackground(); tampilkanModalSukses(newTx);
         }
 
@@ -645,9 +734,34 @@
             return `<div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">${APP_DATA.settings.storeName}</div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.address}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div>No Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div>${itemStr}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:right; font-weight:bold;">TOTAL: Rp ${Number(tx.total).toLocaleString('id-ID')}</div><div>Bayar: ${tx.metode}</div>${extra}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.footerMsg}</div>`;
         }
 
-        function tampilkanModalSukses(tx) { document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); document.getElementById('btnCetakNota').onclick = () => { document.getElementById('printArea').innerHTML = getStrukHTML(tx); window.print(); }; document.getElementById('btnKirimWA').onclick = () => kirimWA(tx); try{ bsModalNota.show(); }catch(e){} }
-        function kirimWA(tx) { let itemStr = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A'); let text = `*${APP_DATA.settings.storeName}*%0A-----------------%0A*Total: Rp ${Number(tx.total).toLocaleString('id-ID')}*%0A-----------------%0ADetail:%0A${itemStr}%0A%0A${APP_DATA.settings.footerMsg}`; window.open(`https://wa.me/?text=${text}`, '_blank'); }
-        function aksiOrderBaru() { try{ bsModalNota.hide(); }catch(e){} document.getElementById('itemsContainer').innerHTML = ''; tambahBaris(); document.getElementById('uangBayar').value = ''; togglePayment(); generateNoNota(); hitungTotal(); }
+        function tampilkanModalSukses(tx) { 
+            LAST_TX = tx;
+            document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); 
+            try{ bsModalNota.show(); }catch(e){} 
+        }
+
+        function cetakNotaSekarang() {
+            if(!LAST_TX) return;
+            document.getElementById('printArea').innerHTML = getStrukHTML(LAST_TX); 
+            window.print();
+        }
+
+        function kirimWASekarang() {
+            if(!LAST_TX) return;
+            let itemStr = LAST_TX.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A'); 
+            let text = `*${APP_DATA.settings.storeName}*%0A-----------------%0A*Total: Rp ${Number(LAST_TX.total).toLocaleString('id-ID')}*%0A-----------------%0ADetail:%0A${itemStr}%0A%0A${APP_DATA.settings.footerMsg}`; 
+            window.open(`https://wa.me/?text=${text}`, '_blank'); 
+        }
+
+        function aksiOrderBaru() { 
+            try{ bsModalNota.hide(); }catch(e){} 
+            document.getElementById('itemsContainer').innerHTML = ''; 
+            tambahBaris(); 
+            document.getElementById('uangBayar').value = ''; 
+            togglePayment(); 
+            generateNoNota(); 
+            hitungTotal(); 
+        }
 
         // ------------------ LAPORAN & LABA RUGI HARIAN ------------------
         function getTodayDateString() {
@@ -670,7 +784,6 @@
 
             let html = '';
             [...APP_DATA.transactions].reverse().forEach(tx => {
-                // Cek apakah transaksi hari ini
                 if(tx.waktu.includes(todayStr)) {
                     todayTxCount++;
                     todayOmzet += tx.total;
