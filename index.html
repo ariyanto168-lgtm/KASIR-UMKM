@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.29</title>
+    <title>Kasir UMKM - v99.30</title>
     
     <meta name="theme-color" content="#ffecd2">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,6 +17,7 @@
 
     <style>
         :root { 
+            /* Default theme, will be overridden by JS */
             --app-bg: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); 
         }
         html, body {
@@ -48,7 +49,6 @@
         }
         .bottom-nav-item.active { color: #0d6efd; }
 
-        /* KEMBALIKAN CSS BANNER INSTALASI */
         .pwa-install-banner {
             background: #ffffff; border-bottom: 2px solid #0d6efd;
             box-shadow: 0 4px 12px rgba(0,0,0,0.12); padding: 8px 12px;
@@ -84,7 +84,7 @@
 <body>
 
     <!-- ================= AUTHENTICATION SCREEN ================= -->
-    <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: #fcb69f; background-image: var(--app-bg); display: flex;">
+    <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: var(--app-bg); display: flex;">
         <div class="card auth-card shadow-lg border-0">
             
             <div id="authLoginView" class="card-body p-4 text-center">
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.29</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.30</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -146,7 +146,6 @@
     <div id="mainApp" style="display:none;">
         <div class="app-viewport">
 
-            <!-- KEMBALIKAN BANNER INSTALASI OTOMATIS PWA -->
             <div id="installBanner" class="pwa-install-banner" style="display: none;">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
@@ -226,7 +225,6 @@
                             </div>
                         </div>
 
-                        <!-- KOTAK QRIS -->
                         <div id="qrisBox" class="bg-light p-2 rounded-3 text-center border" style="display:none;">
                             <span class="small fw-bold text-primary d-block mb-1" style="font-size:10px;">Scan QRIS Pembayaran</span>
                             <img id="qrisImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=QRIS" class="img-fluid border bg-white p-1 rounded shadow-sm" style="max-height: 150px; object-fit: contain;">
@@ -342,6 +340,15 @@
                     <label class="form-label small fw-bold mb-1">URL Google Sheets (Opsional)</label>
                     <input type="url" id="setGasUrl" class="form-control form-control-sm mb-3">
                     
+                    <!-- PILIHAN TEMA WARNA -->
+                    <label class="form-label small fw-bold mb-1">Tema Warna</label>
+                    <select id="setTheme" class="form-select form-select-sm mb-3">
+                        <option value="ceria">Ceria (Pastel)</option>
+                        <option value="biru">Biru Standar</option>
+                        <option value="hijau">Hijau Segar</option>
+                        <option value="gelap">Gelap (Dark Mode)</option>
+                    </select>
+
                     <div class="d-flex gap-2 mb-3">
                         <button class="btn btn-sm btn-outline-success w-100 fw-bold rounded-pill" onclick="backupJSON()"><i class="bi bi-download"></i> Backup</button>
                         <label class="btn btn-sm btn-outline-info w-100 fw-bold rounded-pill mb-0" style="cursor:pointer; display:flex; justify-content:center; align-items:center;">
@@ -359,20 +366,29 @@
         </div>
     </div>
 
-    <!-- Modal Ganti PIN -->
+    <!-- Modal Ganti PIN & Pertanyaan Keamanan -->
     <div class="modal fade" id="modalChangePin" tabindex="-1" style="z-index: 2060;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow" style="border-radius: 16px;">
                 <div class="modal-header bg-light border-bottom-0 pb-2">
-                    <h6 class="modal-title fw-bold text-primary"><i class="bi bi-key-fill me-1"></i> Ganti PIN</h6>
+                    <h6 class="modal-title fw-bold text-primary"><i class="bi bi-key-fill me-1"></i> Pemulihan PIN Keamanan</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body pt-0">
-                    <label class="form-label small fw-bold mb-1 mt-2">PIN Saat Ini</label>
-                    <input type="password" id="cpOld" class="form-control form-control-sm bg-light mb-2 text-center fw-bold" placeholder="PIN Lama">
-                    <input type="password" id="cpNew" class="form-control form-control-sm bg-light mb-2 border-primary text-center fw-bold" placeholder="PIN Baru">
-                    <input type="password" id="cpNew2" class="form-control form-control-sm bg-light mb-3 border-primary text-center fw-bold" placeholder="Ulangi PIN Baru">
-                    <button class="btn btn-primary w-100 fw-bold rounded-pill" onclick="saveChangePin()">Simpan PIN Baru</button>
+                <div class="modal-body pt-0" style="max-height: 70vh; overflow-y: auto;">
+                    <div class="bg-light p-2 rounded mb-3 mt-2 border">
+                        <label class="form-label small fw-bold mb-1 text-muted">Pertanyaan Keamanan Pengaman:</label>
+                        <input type="text" id="cpSecQ" class="form-control form-control-sm mb-2" placeholder="Cth: Siapa nama ibu kandung Anda?">
+                        <label class="form-label small fw-bold mb-1 text-muted">Jawaban Keamanan</label>
+                        <input type="text" id="cpSecA" class="form-control form-control-sm" placeholder="Jawaban Anda">
+                    </div>
+
+                    <label class="form-label small fw-bold mb-1">PIN Lama</label>
+                    <input type="password" id="cpOld" class="form-control form-control-sm bg-light mb-2 text-center fw-bold" placeholder="Masukkan PIN Lama">
+                    <label class="form-label small fw-bold mb-1">PIN Baru</label>
+                    <input type="password" id="cpNew" class="form-control form-control-sm bg-light mb-2 border-primary text-center fw-bold" placeholder="Masukkan PIN baru">
+                    <label class="form-label small fw-bold mb-1">Konfirmasi PIN Baru</label>
+                    <input type="password" id="cpNew2" class="form-control form-control-sm bg-light mb-3 border-primary text-center fw-bold" placeholder="Ulangi PIN baru">
+                    <button class="btn btn-primary w-100 fw-bold rounded-pill" onclick="saveChangePin()">Reset & Buat PIN Baru</button>
                 </div>
             </div>
         </div>
@@ -383,22 +399,33 @@
     <script>
         // ------------------ DATA & INISIALISASI ------------------
         let APP_DATA = JSON.parse(localStorage.getItem('APP_DATA_POS')) || { 
-            settings: { storeName: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih Telah Berbelanja!', headerTitle: 'Kasir UMKM', gasUrl: '', bankName: '', noRek: '', pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak', qrisImage: '' }, 
+            settings: { storeName: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih Telah Berbelanja!', headerTitle: 'Kasir UMKM', gasUrl: '', bankName: '', noRek: '', pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak', qrisImage: '', theme: 'ceria' }, 
             transactions: [], unsyncedIds: [] 
         };
         let bsModalQuickSettings;
         let LAST_TX = null;
-        let deferredPrompt; // Variabel untuk Banner Instalasi
+        let deferredPrompt; 
 
         document.addEventListener("DOMContentLoaded", () => {
             try { bsModalQuickSettings = new bootstrap.Modal(document.getElementById('modalQuickSettings')); } catch(e){}
-            initAuth(); updateUIFromSettings(); generateNoNota(); 
+            initAuth(); updateUIFromSettings(); generateNoNota(); applyTheme(APP_DATA.settings.theme);
             if(document.getElementById('itemsContainer').children.length === 0) tambahBaris(); 
             updateCountReport();
             if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
         });
 
-        // ------------------ KEMBALIKAN LOGIKA BANNER INSTALASI ------------------
+        // ------------------ TEMA ------------------
+        function applyTheme(theme) {
+            let bg;
+            switch(theme) {
+                case 'biru': bg = '#f4f6f9'; break; // Default abu kebiruan
+                case 'hijau': bg = '#e8f5e9'; break; // Hijau muda
+                case 'gelap': bg = '#343a40'; break; // Dark
+                case 'ceria': default: bg = 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'; break;
+            }
+            document.documentElement.style.setProperty('--app-bg', bg);
+        }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -412,24 +439,21 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        tutupBannerInstal();
-                    }
+                    if (choiceResult.outcome === 'accepted') { tutupBannerInstal(); }
                     deferredPrompt = null;
                 });
-            } else {
-                alert('Aplikasi siap digunakan atau sudah terinstal.');
-            }
+            } else { alert('Aplikasi siap digunakan atau sudah terinstal.'); }
         }
 
         function tutupBannerInstal() {
             let banner = document.getElementById('installBanner');
             if (banner) banner.style.display = 'none';
         }
-        // ------------------------------------------------------------------------
 
         function initAuth() {
             if (!APP_DATA.settings.pin) APP_DATA.settings.pin = "kamunanyak";
+            if (!APP_DATA.settings.secQ) APP_DATA.settings.secQ = "Di kota manakah Anda lahir?";
+            if (!APP_DATA.settings.secA) APP_DATA.settings.secA = "kamunanyak";
             if (sessionStorage.getItem('IS_LOGGED_IN') === 'true') {
                 document.getElementById('authScreen').style.setProperty('display', 'none', 'important');
                 document.getElementById('mainApp').style.setProperty('display', 'block', 'important');
@@ -470,17 +494,31 @@
         }
 
         function openChangePin() {
+            // Isi kolom pertanyaan dan jawaban keamanan dengan yang tersimpan
+            document.getElementById('cpSecQ').value = APP_DATA.settings.secQ || 'Di kota manakah Anda lahir?';
+            document.getElementById('cpSecA').value = APP_DATA.settings.secA || 'kamunanyak';
             try { new bootstrap.Modal(document.getElementById('modalChangePin')).show(); } catch(e){}
         }
+        
         function saveChangePin() {
             let oldP = document.getElementById('cpOld').value.toLowerCase().replace(/[^a-z0-9]/g, ''); 
             let newP = document.getElementById('cpNew').value.toLowerCase().replace(/[^a-z0-9]/g, ''); 
             let newP2 = document.getElementById('cpNew2').value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let newSecQ = document.getElementById('cpSecQ').value.trim();
+            let newSecA = document.getElementById('cpSecA').value.trim();
+
             let savedOldP = (APP_DATA.settings.pin || 'kamunanyak').toLowerCase().replace(/[^a-z0-9]/g, '');
+            
             if(oldP !== savedOldP && oldP !== 'kamunanyak') return alert('PIN Lama salah!');
             if(!newP || newP !== newP2) return alert('Konfirmasi PIN Baru tidak cocok!');
-            APP_DATA.settings.pin = newP; saveData();
-            alert('PIN berhasil diubah!');
+            if(!newSecQ || !newSecA) return alert('Pertanyaan dan Jawaban Keamanan tidak boleh kosong!');
+
+            APP_DATA.settings.pin = newP; 
+            APP_DATA.settings.secQ = newSecQ;
+            APP_DATA.settings.secA = newSecA;
+            saveData();
+            
+            alert('PIN dan Keamanan berhasil diubah!');
             try { bootstrap.Modal.getInstance(document.getElementById('modalChangePin')).hide(); } catch(e){}
             document.getElementById('cpOld').value = ''; document.getElementById('cpNew').value = ''; document.getElementById('cpNew2').value = '';
         }
@@ -507,6 +545,7 @@
             document.getElementById('setAddress').value = APP_DATA.settings.address || '';
             document.getElementById('setFooterMsg').value = APP_DATA.settings.footerMsg || '';
             document.getElementById('setGasUrl').value = APP_DATA.settings.gasUrl || '';
+            document.getElementById('setTheme').value = APP_DATA.settings.theme || 'ceria';
             bsModalQuickSettings.show();
         }
 
@@ -528,7 +567,13 @@
             APP_DATA.settings.address = document.getElementById('setAddress').value;
             APP_DATA.settings.footerMsg = document.getElementById('setFooterMsg').value;
             APP_DATA.settings.gasUrl = document.getElementById('setGasUrl').value;
-            saveData(); updateUIFromSettings(); bsModalQuickSettings.hide(); alert('Pengaturan Tersimpan!');
+            APP_DATA.settings.theme = document.getElementById('setTheme').value;
+            
+            saveData(); 
+            updateUIFromSettings(); 
+            applyTheme(APP_DATA.settings.theme);
+            bsModalQuickSettings.hide(); 
+            alert('Pengaturan Tersimpan!');
         }
 
         function getTodayDateString() { return new Date().toLocaleDateString('id-ID'); }
