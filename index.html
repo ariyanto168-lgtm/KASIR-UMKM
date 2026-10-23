@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.22</title>
+    <title>Kasir UMKM - v99.23</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -112,9 +112,9 @@
         }
 
         @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; display: block !important; }
-            #printArea { position: absolute; left: 0; top: 0; width: 58mm; margin: 0; padding: 5px; font-family: monospace; font-size: 12px; }
+            body * { visibility: hidden !important; }
+            #printArea, #printArea * { visibility: visible !important; display: block !important; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 5px; font-family: monospace; font-size: 12px; }
         }
         #printArea { display: none; }
     </style>
@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.22</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.23</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.22</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.23</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -247,13 +247,12 @@
                         <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size:10px;">POS Aktif</span>
                     </div>
                     
-                    <!-- DAFTAR PRODUK & TOMBOL TAMBAH BARANG DI BAWAHNYA (DI ATAS PEMBAYARAN) -->
+                    <!-- DAFTAR PRODUK & TOMBOL TAMBAH BARANG DI BAWAHNYA -->
                     <div class="card-sm bg-white">
                         <div class="fw-bold text-dark mb-1" style="font-size: 11px;"><i class="bi bi-box-seam me-1 text-primary"></i> Daftar Produk</div>
                         
                         <div id="itemsContainer"></div>
 
-                        <!-- TOMBOL TAMBAH BARANG DIPINDAH DI ATAS PEMBAYARAN -->
                         <button class="btn btn-outline-primary btn-sm w-100 fw-bold rounded-pill mt-2 py-1 shadow-sm" onclick="tambahBaris()" style="font-size: 11px;">
                             <i class="bi bi-plus-circle-fill me-1"></i> Tambah Barang
                         </button>
@@ -348,7 +347,7 @@
                 </button>
             </div>
 
-            <!-- BOT NAV MINIMALIS & SIMETRIS (50% KASIR | 50% LAPORAN) -->
+            <!-- BOT NAV MINIMALIS & SIMETRIS -->
             <div class="bg-white border-top d-flex justify-content-stretch text-center" style="font-size:11px;">
                 <a href="javascript:void(0)" id="navKasir" class="bottom-nav-item active" onclick="switchTab('kasir')">
                     <i class="bi bi-house-door-fill fs-6 mb-1"></i>
@@ -647,7 +646,7 @@
             document.getElementById('headerStoreAddress').innerText = s.address || 'Kota Anda'; 
         }
 
-        // ------------------ TRANSAKSI & AUTO SCROLL DINAMIS ------------------
+        // ------------------ TRANSAKSI & CETAK/WA FIX ------------------
         function updateCountReport() { document.getElementById('countReportBtn').innerText = APP_DATA.transactions.length; }
         function generateNoNota() { 
             let val = 'INV-' + (Math.floor(Math.random() * 900000) + 100000);
@@ -683,7 +682,6 @@
             container.insertAdjacentHTML('beforeend', rowHTML); 
             hitungTotal();
 
-            // AUTO SCROLL MULUS & DINAMIS KE INPUT BARANG BARU
             setTimeout(() => {
                 let newRow = document.getElementById(`row-${id}`);
                 if (newRow) {
@@ -729,6 +727,7 @@
         }
 
         function getStrukHTML(tx) {
+            if(!tx) return '';
             let itemStr = tx.items.map(i => `<div><b>${i.nama}</b></div><div>${i.qty} x Rp ${Number(i.harga).toLocaleString('id-ID')} = Rp ${Number(i.subtotal).toLocaleString('id-ID')}</div>`).join('');
             let extra = tx.metode === 'Tunai' ? `<div>Tunai: Rp ${Number(tx.uangBayar).toLocaleString('id-ID')}</div><div>Kembali: Rp ${Number(tx.kembalian).toLocaleString('id-ID')}</div>` : tx.metode === 'Transfer' ? `<div>Bank: ${tx.bankName}</div><div>Rek: ${tx.noRek}</div>` : '';
             return `<div style="text-align:center; font-weight:bold; font-size:14px; margin-bottom:5px;">${APP_DATA.settings.storeName}</div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.address}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div>No Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000; margin:5px 0;"></div>${itemStr}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:right; font-weight:bold;">TOTAL: Rp ${Number(tx.total).toLocaleString('id-ID')}</div><div>Bayar: ${tx.metode}</div>${extra}<div style="border-bottom:1px dashed #000; margin:5px 0;"></div><div style="text-align:center; font-size:10px;">${APP_DATA.settings.footerMsg}</div>`;
@@ -740,17 +739,25 @@
             try{ bsModalNota.show(); }catch(e){} 
         }
 
+        // PERBAIKAN FUNGSI CETAK
         function cetakNotaSekarang() {
-            if(!LAST_TX) return;
-            document.getElementById('printArea').innerHTML = getStrukHTML(LAST_TX); 
-            window.print();
+            if(!LAST_TX) return alert("Data transaksi tidak ditemukan!");
+            let printArea = document.getElementById('printArea');
+            printArea.innerHTML = getStrukHTML(LAST_TX); 
+            setTimeout(() => {
+                window.print();
+            }, 150);
         }
 
+        // PERBAIKAN FUNGSI SHARE WHATSAPP
         function kirimWASekarang() {
-            if(!LAST_TX) return;
-            let itemStr = LAST_TX.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('%0A'); 
-            let text = `*${APP_DATA.settings.storeName}*%0A-----------------%0A*Total: Rp ${Number(LAST_TX.total).toLocaleString('id-ID')}*%0A-----------------%0ADetail:%0A${itemStr}%0A%0A${APP_DATA.settings.footerMsg}`; 
-            window.open(`https://wa.me/?text=${text}`, '_blank'); 
+            if(!LAST_TX) return alert("Data transaksi tidak ditemukan!");
+            let itemLines = LAST_TX.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${Number(i.subtotal).toLocaleString('id-ID')}`).join('\n'); 
+            
+            let pesanTeks = `${APP_DATA.settings.storeName}\n${APP_DATA.settings.address}\n----------------------------------\nNo Nota: ${LAST_TX.nota}\nTgl: ${LAST_TX.waktu}\n----------------------------------\n${itemLines}\n----------------------------------\nTotal: Rp ${Number(LAST_TX.total).toLocaleString('id-ID')}\nBayar: ${LAST_TX.metode}\n\n${APP_DATA.settings.footerMsg}`;
+            
+            let waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesanTeks)}`;
+            window.location.href = waUrl;
         }
 
         function aksiOrderBaru() { 
@@ -822,8 +829,8 @@
                 });
             }
 
-            let pesan = `*${APP_DATA.settings.storeName}*%0A${judul}%0A----------------------------------%0A- Jumlah Transaksi: ${totalTx} tx%0A- Total Omzet: Rp ${totalOmzet.toLocaleString('id-ID')}%0A- Laba Bersih: Rp ${totalLaba.toLocaleString('id-ID')}%0A----------------------------------%0A_Laporan ini dibuat otomatis dari Kasir UMKM_`;
-            window.open(`https://wa.me/?text=${pesan}`, '_blank');
+            let pesan = `*${APP_DATA.settings.storeName}*\n${judul}\n----------------------------------\n- Jumlah Transaksi: ${totalTx} tx\n- Total Omzet: Rp ${totalOmzet.toLocaleString('id-ID')}\n- Laba Bersih: Rp ${totalLaba.toLocaleString('id-ID')}\n----------------------------------\n_Laporan ini dibuat otomatis dari Kasir UMKM_`;
+            window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`;
         }
 
         function konfirmasiResetLaporan() { if(confirm("Hapus riwayat transaksi lokal?")) { APP_DATA.transactions = []; APP_DATA.unsyncedIds = []; saveData(); renderLaporan(); } }
