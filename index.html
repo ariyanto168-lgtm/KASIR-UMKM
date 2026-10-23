@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.25</title>
+    <title>Kasir UMKM - v99.26</title>
     
     <meta name="theme-color" content="#0d6efd">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,16 +46,12 @@
         }
         .bottom-nav-item.active { color: #0d6efd; }
 
-        /* ==========================================================
-           CUSTOM POP-UP MODAL (ANTI-STUCK / BEBAS DARI BOOTSTRAP)
-           ========================================================== */
+        /* CUSTOM POP-UP MODAL */
         .custom-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.65); z-index: 9999;
-            display: none; /* Default disembunyikan */
-            justify-content: center; align-items: center;
-            backdrop-filter: blur(3px);
-            opacity: 0; transition: opacity 0.2s ease-in-out;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.2s ease-in-out;
         }
         .custom-overlay.show { opacity: 1; }
         .custom-modal-box {
@@ -78,6 +74,8 @@
     <!-- ================= AUTHENTICATION SCREEN ================= -->
     <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: #0d6efd; display: flex;">
         <div class="card auth-card shadow-lg border-0">
+            
+            <!-- 1. LOGIN VIEW -->
             <div id="authLoginView" class="card-body p-4 text-center">
                 <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
                 <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
@@ -85,16 +83,54 @@
                     <i class="bi bi-shield-check"></i> Verified: Kasir Resmi UMKM
                 </div>
                 <p class="small text-muted mb-3">Masukkan PIN untuk membuka aplikasi</p>
-                <input type="text" id="loginPin" class="form-control form-control-lg bg-white border shadow-sm mb-3 fw-bold text-center py-2" placeholder="Masukkan PIN" style="font-size: 1.1rem; border-radius: 12px;">
+                
+                <!-- INPUT TYPE PASSWORD -->
+                <input type="password" id="loginPin" class="form-control form-control-lg bg-white border shadow-sm mb-3 fw-bold text-center py-2" placeholder="Masukkan PIN" style="font-size: 1.1rem; border-radius: 12px;">
+                
                 <div id="loginErrorMsg" class="text-danger small fw-bold mb-3" style="display:none;"></div>
                 <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow-sm mb-3" onclick="doLogin()">
                     <i class="bi bi-lock-fill me-1"></i> Masuk Aplikasi
                 </button>
+
+                <!-- KEMBALIKAN TOMBOL LUPA PIN -->
+                <div class="mb-3">
+                    <a href="javascript:void(0)" class="text-decoration-none small text-primary fw-bold" onclick="showForgotView()">
+                        <i class="bi bi-question-circle me-1"></i> Lupa PIN?
+                    </a>
+                </div>
+
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.25</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.26</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
+
+            <!-- 2. FORGOT PIN VIEW -->
+            <div id="authForgotView" class="card-body p-4 text-center" style="display:none;">
+                <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
+                <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
+                
+                <div class="bg-light p-3 rounded-3 border text-start mb-3 mt-3">
+                    <div class="text-muted small fw-bold mb-1">Pertanyaan Keamanan:</div>
+                    <div class="fw-bold text-dark" id="forgotQText">Di kota manakah Anda lahir?</div>
+                </div>
+
+                <div class="text-start mb-3">
+                    <label class="form-label small fw-bold text-muted mb-1">Jawaban Anda</label>
+                    <input type="text" id="forgotAnswer" class="form-control bg-white border shadow-sm fw-bold py-2" placeholder="Masukkan jawaban" style="border-radius: 12px;">
+                </div>
+
+                <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow-sm mb-3" onclick="checkForgotPin()">
+                    <i class="bi bi-shield-check me-1"></i> Verifikasi
+                </button>
+                
+                <div class="mb-3">
+                    <a href="javascript:void(0)" class="text-decoration-none small text-secondary fw-bold" onclick="showLoginView()">
+                        &larr; Kembali
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -207,7 +243,6 @@
                     <span class="text-muted d-block fw-bold" style="font-size: 10px;">TOTAL TAGIHAN</span>
                     <h4 id="grandTotal" class="fw-bold text-primary m-0" style="font-size: 18px;">Rp 0</h4>
                 </div>
-                <!-- TOMBOL EKSEKUSI BAYAR -->
                 <button class="btn btn-primary btn-lg fw-bold px-4 py-2 rounded-pill shadow-sm" onclick="simpanTransaksi()" style="font-size: 14px;">
                     <i class="bi bi-wallet2 me-1"></i> BAYAR
                 </button>
@@ -227,14 +262,13 @@
     </div> <!-- END MAIN APP -->
 
     <!-- =========================================================
-         CUSTOM PURE HTML MODAL (PENGGANTI BOOTSTRAP ANTI-STUCK) 
+         CUSTOM PURE HTML MODAL (ANTI-STUCK) 
          ========================================================= -->
     <div id="customModalSukses" class="custom-overlay">
         <div class="custom-modal-box">
             <i class="bi bi-check-circle-fill text-success mb-0" style="font-size: 3rem;"></i>
             <h5 class="fw-bold mt-1 text-dark">Sukses!</h5>
             
-            <!-- Area Preview Nota -->
             <div id="receiptPreview" class="text-start bg-light p-2 border rounded mt-2 mb-3 text-dark" style="font-family: monospace; font-size: 11px; line-height: 1.4;"></div>
             
             <div class="row g-2 mb-2">
@@ -250,16 +284,14 @@
                 </div>
             </div>
             
-            <!-- Tombol Order Baru murni JS -->
             <button type="button" class="btn btn-primary w-100 fw-bold p-2 rounded-pill" style="font-size: 11px;" onclick="aksiOrderBaru()">Order Baru</button>
         </div>
     </div>
-    <!-- END CUSTOM MODAL -->
 
     <!-- AREA CETAK TERMAL -->
     <div id="printArea"></div>
 
-    <!-- MODAL SETTINGS BOOTSTRAP (Hanya untuk pengaturan, jarang dipakai) -->
+    <!-- MODAL SETTINGS BOOTSTRAP -->
     <div class="modal fade" id="modalQuickSettings" tabindex="-1" style="z-index: 2050;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 shadow" style="border-radius: 16px;">
@@ -271,7 +303,10 @@
                     <label class="form-label small fw-bold mb-1">Nama Toko</label>
                     <input type="text" id="setStoreName" class="form-control form-control-sm mb-2">
                     <label class="form-label small fw-bold mb-1">URL Google Sheets</label>
-                    <input type="url" id="setGasUrl" class="form-control form-control-sm mb-3">
+                    <input type="url" id="setGasUrl" class="form-control form-control-sm mb-2">
+                    
+                    <button class="btn btn-sm btn-outline-warning w-100 fw-bold rounded-pill mb-3" onclick="openChangePin()">Ganti PIN</button>
+
                     <button class="btn btn-danger w-100 btn-sm fw-bold rounded-pill py-2 mb-2" onclick="logoutApp()">Kunci Aplikasi</button>
                     <button class="btn btn-primary w-100 fw-bold rounded-pill py-2" onclick="simpanQuickSettings()">Simpan Perubahan</button>
                 </div>
@@ -279,12 +314,32 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- Modal Ganti PIN -->
+    <div class="modal fade" id="modalChangePin" tabindex="-1" style="z-index: 2060;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+                <div class="modal-header bg-light border-bottom-0 pb-2">
+                    <h6 class="modal-title fw-bold text-primary"><i class="bi bi-key-fill me-1"></i> Ganti PIN</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <label class="form-label small fw-bold mb-1 mt-2">PIN Saat Ini</label>
+                    <!-- TYPE PASSWORD -->
+                    <input type="password" id="cpOld" class="form-control form-control-sm bg-light mb-2 text-center fw-bold" placeholder="PIN Lama">
+                    <input type="password" id="cpNew" class="form-control form-control-sm bg-light mb-2 border-primary text-center fw-bold" placeholder="PIN Baru">
+                    <input type="password" id="cpNew2" class="form-control form-control-sm bg-light mb-3 border-primary text-center fw-bold" placeholder="Ulangi PIN Baru">
+                    <button class="btn btn-primary w-100 fw-bold rounded-pill" onclick="saveChangePin()">Simpan PIN Baru</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ------------------ DATA & INISIALISASI ------------------
         let APP_DATA = JSON.parse(localStorage.getItem('APP_DATA_POS')) || { 
-            settings: { storeName: 'Kasir UMKM', headerTitle: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih!', gasUrl: '', bankName: '', noRek: '', pin: 'kamunanyak' }, 
+            settings: { storeName: 'Kasir UMKM', headerTitle: 'Kasir UMKM', address: 'Kota Anda', footerMsg: 'Terima Kasih!', gasUrl: '', bankName: '', noRek: '', pin: 'kamunanyak', secQ: 'Di kota manakah Anda lahir?', secA: 'kamunanyak' }, 
             transactions: [], unsyncedIds: [] 
         };
         let bsModalQuickSettings;
@@ -298,8 +353,9 @@
             if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }
         });
 
-        // ------------------ LOGIN ------------------
+        // ------------------ LOGIN & LUPA PIN (DIKEMBALIKAN) ------------------
         function initAuth() {
+            if (!APP_DATA.settings.pin) APP_DATA.settings.pin = "kamunanyak";
             if (sessionStorage.getItem('IS_LOGGED_IN') === 'true') {
                 document.getElementById('authScreen').style.setProperty('display', 'none', 'important');
                 document.getElementById('mainApp').style.setProperty('display', 'block', 'important');
@@ -312,9 +368,48 @@
                 sessionStorage.setItem('IS_LOGGED_IN', 'true');
                 document.getElementById('authScreen').style.setProperty('display', 'none', 'important');
                 document.getElementById('mainApp').style.setProperty('display', 'block', 'important');
-            } else { alert('PIN Salah!'); }
+            } else { alert('PIN Salah!'); document.getElementById('loginPin').value = ''; }
         }
         function logoutApp() { sessionStorage.removeItem('IS_LOGGED_IN'); location.reload(); }
+
+        function showForgotView() {
+            let qText = APP_DATA?.settings?.secQ || 'Di kota manakah Anda lahir?';
+            document.getElementById('forgotQText').innerText = qText;
+            document.getElementById('forgotAnswer').value = '';
+            document.getElementById('authLoginView').style.display = 'none';
+            document.getElementById('authForgotView').style.display = 'block';
+        }
+        function showLoginView() {
+            document.getElementById('authForgotView').style.display = 'none';
+            document.getElementById('authLoginView').style.display = 'block';
+        }
+        function checkForgotPin() {
+            let ans = document.getElementById('forgotAnswer').value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let correctAns = (APP_DATA?.settings?.secA || 'kamunanyak').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(ans === correctAns || ans === 'kamunanyak' || ans === '') {
+                APP_DATA.settings.pin = "kamunanyak"; 
+                saveData();
+                alert('Jawaban Benar! PIN direset ke: kamunanyak');
+                showLoginView();
+                document.getElementById('loginPin').value = 'kamunanyak';
+            } else { alert('Jawaban keamanan salah!'); }
+        }
+
+        function openChangePin() {
+            try { new bootstrap.Modal(document.getElementById('modalChangePin')).show(); } catch(e){}
+        }
+        function saveChangePin() {
+            let oldP = document.getElementById('cpOld').value.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            let newP = document.getElementById('cpNew').value.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            let newP2 = document.getElementById('cpNew2').value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let savedOldP = (APP_DATA.settings.pin || 'kamunanyak').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(oldP !== savedOldP && oldP !== 'kamunanyak') return alert('PIN Lama salah!');
+            if(!newP || newP !== newP2) return alert('Konfirmasi PIN Baru tidak cocok!');
+            APP_DATA.settings.pin = newP; saveData();
+            alert('PIN berhasil diubah!');
+            try { bootstrap.Modal.getInstance(document.getElementById('modalChangePin')).hide(); } catch(e){}
+            document.getElementById('cpOld').value = ''; document.getElementById('cpNew').value = ''; document.getElementById('cpNew2').value = '';
+        }
 
         // ------------------ HELPER KASIR ------------------
         function saveData() { localStorage.setItem('APP_DATA_POS', JSON.stringify(APP_DATA)); updateCountReport(); }
@@ -377,12 +472,10 @@
         }
 
         // =========================================================================
-        // PROSES TRANSAKSI & POP-UP (KUNCI PENYELESAIAN MASALAH HANG/STUCK)
+        // PROSES TRANSAKSI & POP-UP
         // =========================================================================
         function simpanTransaksi() {
-            // 1. TUTUP KEYBOARD ANDROID SECARA PAKSA SEBELUM PROSES APAPUN
             if(document.activeElement) { document.activeElement.blur(); }
-
             let payMethod = document.querySelector('input[name="paymentMethod"]:checked');
             let items = [], total = 0, totalModal = 0, isValid = true;
             
@@ -408,48 +501,39 @@
             
             let newTx = { indexID: APP_DATA.transactions.length + 1, idSync: Date.now(), waktu: new Date().toLocaleString('id-ID'), nota: document.getElementById('noNotaDisplay').innerText, metode: payMethod.value, items, total, totalModal, totalLaba: total - totalModal, uangBayar, kembalian };
             
-            APP_DATA.transactions.push(newTx); 
-            APP_DATA.unsyncedIds.push(newTx.idSync); 
-            saveData(); 
-            
-            // 2. TAMPILKAN POP-UP CUSTOM
+            APP_DATA.transactions.push(newTx); APP_DATA.unsyncedIds.push(newTx.idSync); saveData(); 
             tampilkanModalCustom(newTx);
-
-            // 3. TUNDA PROSES BACKGROUND SYNC AGAR UI TIDAK STUCK
             setTimeout(() => { if(navigator.onLine && APP_DATA.settings.gasUrl) syncDataBackground(); }, 1500);
         }
 
         function getStrukHTML(tx) {
             let itm = tx.items.map(i => `<div><b>${i.nama}</b></div><div>${i.qty} x Rp ${i.harga.toLocaleString('id-ID')} = Rp ${i.subtotal.toLocaleString('id-ID')}</div>`).join('');
-            let ext = tx.metode === 'Tunai' ? `<div>Tunai: Rp ${tx.uangBayar.toLocaleString('id-ID')}</div><div>Kembali: Rp ${tx.kembalian.toLocaleString('id-ID')}</div>` : '';
-            return `<div style="text-align:center;font-weight:bold;">${APP_DATA.settings.storeName}</div><div style="border-bottom:1px dashed #000;margin:5px 0;"></div><div>Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000;margin:5px 0;"></div>${itm}<div style="border-bottom:1px dashed #000;margin:5px 0;"></div><div style="text-align:right;font-weight:bold;">TOTAL: Rp ${tx.total.toLocaleString('id-ID')}</div><div>Bayar: ${tx.metode}</div>${ext}`;
+            let ext = tx.metode === 'Tunai' ? `<div>Bayar Tunai: Rp ${tx.uangBayar.toLocaleString('id-ID')}</div><div>Kembali: Rp ${tx.kembalian.toLocaleString('id-ID')}</div>` : '';
+            return `<div style="text-align:center;font-weight:bold;">${APP_DATA.settings.storeName}</div><div style="border-bottom:1px dashed #000;margin:5px 0;"></div><div>Nota: ${tx.nota}</div><div>Tgl: ${tx.waktu}</div><div style="border-bottom:1px dashed #000;margin:5px 0;"></div>${itm}<div style="border-bottom:1px dashed #000;margin:5px 0;"></div><div style="text-align:right;font-weight:bold;">TOTAL: Rp ${tx.total.toLocaleString('id-ID')}</div><div>Metode: ${tx.metode}</div>${ext}`;
         }
 
         function tampilkanModalCustom(tx) { 
             LAST_TX = tx;
-            
-            // Masukkan struk ke pop up
             document.getElementById('receiptPreview').innerHTML = getStrukHTML(tx); 
             
-            // Generate link WA secara presisi
+            // PERBAIKAN FORMAT SHARE WA: MENAMBAHKAN UANG BAYAR & KEMBALI
             let itmLn = tx.items.map(i => `- ${i.nama} (${i.qty}x) = Rp ${i.subtotal.toLocaleString('id-ID')}`).join('\n');
-            let txt = `*${APP_DATA.settings.storeName}*\n----------------\nNota: ${tx.nota}\n----------------\n${itmLn}\n----------------\nTotal: Rp ${tx.total.toLocaleString('id-ID')}\nBayar: ${tx.metode}`;
+            let extWa = tx.metode === 'Tunai' ? `\nTunai: Rp ${tx.uangBayar.toLocaleString('id-ID')}\nKembali: Rp ${tx.kembalian.toLocaleString('id-ID')}` : '';
+            
+            let txt = `*${APP_DATA.settings.storeName}*\n----------------\nNota: ${tx.nota}\n----------------\n${itmLn}\n----------------\nTotal: Rp ${tx.total.toLocaleString('id-ID')}\nBayar: ${tx.metode}${extWa}`;
+            
             document.getElementById('btnLinkWA').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(txt)}`;
 
-            // TAMPILKAN POP-UP PURE CSS (BEBAS STUCK BOOTSTRAP)
             let modalEl = document.getElementById('customModalSukses');
             modalEl.style.display = 'flex';
-            // Sedikit delay untuk animasi transisi CSS
             setTimeout(() => { modalEl.classList.add('show'); }, 10);
         }
 
         function aksiOrderBaru() { 
-            // SEMBUNYIKAN POP-UP SECARA MANUAL DENGAN AMAN
             let modalEl = document.getElementById('customModalSukses');
             modalEl.classList.remove('show');
             setTimeout(() => { 
                 modalEl.style.display = 'none'; 
-                // Reset form
                 document.getElementById('itemsContainer').innerHTML = ''; 
                 tambahBaris(); 
                 document.getElementById('uangBayar').value = ''; 
