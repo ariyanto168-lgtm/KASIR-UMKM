@@ -23,7 +23,6 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(response => {
       if (response) return response;
       return fetch(event.request).then(fetchRes => {
-        // Abaikan jika bukan GET atau tidak diawali http/https
         if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
           return fetchRes;
         }
