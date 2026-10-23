@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kasir-pos-v99.29';
+const CACHE_NAME = 'kasir-pos-v99.30';
 const urlsToCache = [
   './',
   './index.html',
