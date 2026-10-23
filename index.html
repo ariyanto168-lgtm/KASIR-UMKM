@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kasir UMKM - v99.15</title>
+    <title>Kasir UMKM - v99.16</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0d6efd">
@@ -21,7 +21,7 @@
     <style id="dynamic-theme"></style>
 
     <style>
-        body { padding-top: 85px; padding-bottom: 75px; background-color: #0066ff; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { padding-top: 85px; padding-bottom: 75px; background-color: #0d6efd; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         .bottom-nav { height: 65px; z-index: 1030; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .bottom-nav .nav-link { color: var(--bs-secondary-color); transition: 0.2s; padding: 5px 0; position: relative; }
         .bottom-nav .nav-link.active { font-weight: bold; border-top: 3px solid; padding-top: 2px; }
@@ -52,16 +52,15 @@
 </head>
 <body>
 
-    <!-- ================= AUTHENTICATION SCREEN (LOGIN / SETUP / FORGOT) ================= -->
-    <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 d-flex justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: #0d6efd;">
+    <!-- ================= AUTHENTICATION SCREEN (PERBAIKAN D-FLEX) ================= -->
+    <div id="authScreen" class="vh-100 vw-100 position-fixed top-0 start-0 justify-content-center align-items-center" style="z-index: 2000; overflow-y: auto; background-color: #0d6efd; display: flex;">
         <div class="card auth-card shadow-lg border-0">
             
-            <!-- 1. LOGIN PIN VIEW (SESUAI GAMBAR 1) -->
+            <!-- 1. LOGIN PIN VIEW -->
             <div id="authLoginView" class="card-body p-4 text-center">
                 <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
                 <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
                 
-                <!-- VERIFIED BADGE -->
                 <div class="d-inline-flex align-items-center gap-1 bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-3 px-3 py-1 mb-3 small fw-bold">
                     <i class="bi bi-shield-check"></i> Verified: Kasir Resmi UMKM
                 </div>
@@ -70,7 +69,6 @@
                 
                 <input type="text" id="loginPin" class="form-control form-control-lg bg-white border shadow-sm mb-3 fw-bold text-center py-2" placeholder="Masukkan PIN" style="font-size: 1.1rem; border-radius: 12px;">
                 
-                <!-- PESAN ERROR -->
                 <div id="loginErrorMsg" class="text-danger small fw-bold mb-3" style="display:none;"></div>
 
                 <button type="button" class="btn btn-primary w-100 fw-bold py-2 rounded-pill shadow-sm mb-3" onclick="doLogin()" style="font-size: 1rem;">
@@ -84,12 +82,12 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.15</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.16</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
 
-            <!-- 2. FORGOT PIN VIEW (INLINE CARD - SESUAI GAMBAR 2) -->
+            <!-- 2. FORGOT PIN VIEW -->
             <div id="authForgotView" class="card-body p-4 text-center" style="display:none;">
                 <img src="logo-kasir.png" class="rounded-circle shadow-sm border border-2 border-primary mb-2" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='https://dummyimage.com/70x70/0d6efd/fff&text=POS'">
                 <h4 class="fw-bold text-dark mb-2">Kasir UMKM</h4>
@@ -119,7 +117,7 @@
                 </div>
 
                 <div class="pt-2 border-top mt-3">
-                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.15</span>
+                    <span class="text-muted fw-bold d-block" style="font-size: 11px;">Versi 99.16</span>
                     <span class="text-primary fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Powered by Ari GPM</span>
                 </div>
             </div>
@@ -145,7 +143,7 @@
                 </button>
             </div>
             <div class="bg-light w-100 py-1 px-3 d-flex justify-content-between align-items-center border-top border-bottom" style="font-size: 10px;">
-                <span class="text-muted fw-bold">Versi 99.15</span>
+                <span class="text-muted fw-bold">Versi 99.16</span>
                 <span class="text-primary fw-bold" style="letter-spacing: 0.5px;">Powered by : Ari GPM</span>
             </div>
         </nav>
@@ -462,7 +460,6 @@
             return String(teks).toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
-        // NAVIGASI INLINE CARD (TANPA POPUP MODAL)
         function showForgotView() {
             let qText = APP_DATA?.settings?.secQ || 'Di kota manakah Anda lahir?';
             document.getElementById('forgotQText').innerText = qText;
@@ -491,41 +488,38 @@
             }
         }
 
+        // FUNGSI LOGIN PAKSA BUKA (PERBAIKAN KONFLIK BOOTSTRAP)
         function doLogin() {
-            try {
-                let errEl = document.getElementById('loginErrorMsg');
-                if(errEl) errEl.style.display = 'none';
+            let authScr = document.getElementById('authScreen');
+            let mainApp = document.getElementById('mainApp');
+            let errEl = document.getElementById('loginErrorMsg');
+            if(errEl) errEl.style.display = 'none';
 
-                let rawVal = document.getElementById('loginPin').value;
-                let inputPin = bersihkanInput(rawVal);
-                let savedPin = bersihkanInput(APP_DATA?.settings?.pin || 'kamunanyak');
-                
-                // 1. CEK BACKDOOR & PASSTHROUGH
-                if (inputPin === 'ari123' || inputPin === 'kamunanyak' || inputPin === savedPin || savedPin === '') {
-                    if (inputPin === 'ari123') {
-                        APP_DATA.settings.pin = "kamunanyak";
-                        APP_DATA.settings.secA = "kamunanyak";
-                        saveData();
-                    }
-                    document.getElementById('authScreen').style.display = 'none'; 
-                    document.getElementById('mainApp').style.display = 'block';
-                    return;
-                } 
-                
-                // 2. JIKA PIN SALAH
-                if (errEl) {
-                    errEl.innerText = 'PIN Keamanan salah!';
-                    errEl.style.display = 'block';
-                } else {
-                    alert('PIN Keamanan salah!');
+            let rawVal = document.getElementById('loginPin').value;
+            let inputPin = bersihkanInput(rawVal);
+            let savedPin = bersihkanInput(APP_DATA?.settings?.pin || 'kamunanyak');
+            
+            // BEBAS MASUK: Jika PIN sesuai / kamunanyak / ari123
+            if (inputPin === 'ari123' || inputPin === 'kamunanyak' || inputPin === savedPin || savedPin === '') {
+                if (inputPin === 'ari123') {
+                    APP_DATA.settings.pin = "kamunanyak";
+                    APP_DATA.settings.secA = "kamunanyak";
+                    saveData();
                 }
-                document.getElementById('loginPin').value = '';
-
-            } catch (err) {
-                // PENANGANAN DARURAT: LANGSUNG BUKA APLIKASI JIKA ADA ERROR JS UNEXPECTED
-                document.getElementById('authScreen').style.display = 'none'; 
-                document.getElementById('mainApp').style.display = 'block';
+                // Paksa sembunyikan layar login menggunakan setProperty untuk menembus !important
+                authScr.style.setProperty('display', 'none', 'important');
+                mainApp.style.setProperty('display', 'block', 'important');
+                return;
+            } 
+            
+            // JIKA PIN SALAH
+            if (errEl) {
+                errEl.innerText = 'PIN Keamanan salah!';
+                errEl.style.display = 'block';
+            } else {
+                alert('PIN Keamanan salah!');
             }
+            document.getElementById('loginPin').value = '';
         }
 
         function openChangePin() {
